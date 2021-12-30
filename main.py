@@ -51,11 +51,11 @@ dataloader_test = DataLoader(dataset=test_dataset,
                              num_workers=0,
                              )
 if args.model=='MLP':
-    model = MLP(num_users=args.batch*max_num_users,num_items=args.batch*max_num_items,layer=args.layer)
+    model = MLP(num_usermax_num_users,num_items=max_num_items,layer=args.layer)
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
 elif args.model=='GMF':
-    model = GMF(num_users=args.batch*max_num_users, num_items=args.batch*max_num_items)
+    model = GMF(num_users=32, num_items=32)
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
 elif args.model=='NCF':
