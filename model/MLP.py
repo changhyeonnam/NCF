@@ -18,14 +18,14 @@ class MLP(nn.Module):
         for idx,num_factor in enumerate(layer):
             # ith MLP layer (layer[i],layer[i]//2) -> #(i+1)th MLP layer (layer[i+1],layer[i+1]//2)
             # ex) (32,16) -> (16,8) -> (8,4)
-            MLP_layers.append(nn.Linear(num_factor,num_factor//2))
             if idx ==(len(layer)-1):
+                MLP_layers.append(nn.Linear(num_factor, 1))
                 MLP_layers.append(nn.Sigmoid())
             else:
+                MLP_layers.append(nn.Linear(num_factor, num_factor // 2))
                 MLP_layers.append(nn.ReLU())
         # unpacking layers in to torch.nn.Sequential
         self.MLP_model = nn.Sequential(*MLP_layers)
-       # self.predict_layer = nn.Linear(layer[len(layer)-1]//2,1)
 
     def forward(self,user,item):
         embed_user = self.user_embedding(user)
@@ -33,7 +33,6 @@ class MLP(nn.Module):
         # dim=-1 means torch.cat(((2,3),(2,3)),-1) => (2,6) ((4,3))
         embed_input = torch.cat((embed_user,embed_item),dim=-1)
         output = self.MLP_model(embed_input)
-
         return output
 
 

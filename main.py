@@ -3,12 +3,13 @@ import argparse
 import inspect
 from torch.utils.data import DataLoader
 import torch.optim as optim
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from utils import MovieLens
 from model.MLP import MLP
 from model.GMF import GMF
 from train import Train
 from evaluation import Test
+
 
 device = torch.device('cuda'if torch.cuda.is_available() else 'cpu')
 print(f'device: {device}')
