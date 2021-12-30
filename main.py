@@ -22,7 +22,7 @@ parser=argparse.ArgumentParser(description="Run selected model")
 parser.add_argument('-e','--epoch',type=int,default=1,help="Number of epochs")
 parser.add_argument('-b','--batch',type=int,default=32,help="Batch size")
 parser.add_argument('-l','--layer',type=None,default=[32,16,8],help='MLP layer factor list')
-parser.add_argument('-m','--model',type=str,default='MLP',help='MLP, GMF, NeuMF')
+parser.add_argument('-m','--model',type=str,default='GMF',help='MLP, GMF, NeuMF')
 parser.add_argument('-s','--size',type=str,default='small',help='Size of File')
 parser.add_argument('-lr','--lr',type=float,default=1e-3,help='learning rate')
 parser.add_argument('-dl','--download',type=str,default='False',help='Download or not')
@@ -86,7 +86,7 @@ if __name__=='__main__' :
     costs = train.train()
     plt.plot(range(0, args.epochs), costs)
     plt.xlabel('epoch')
-    plt.ylabel('RMSE')
+    plt.ylabel('Loss')
     now = time.localtime()
     time_now = f"{now.tm_hour:02d}:{now.tm_min:02d}:{now.tm_sec:02d} "
     fig_file = f"loss_curve_epochs_{args.epochs}_batch_{args.batch}_size_{args.size}_lr_{args.lr}_factor_{args.factor}.png"

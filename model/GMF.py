@@ -11,9 +11,10 @@ class GMF(nn.Module):
         self.num_items = num_items
         self.user_embedding = nn.Embedding(num_users,num_factor)
         self.item_embedding = nn.Embedding(num_items,num_factor)
-
+        self.predict_layer = nn.Sequential(nn.Linear(num_factor,1),nn.Sigmoid())
     def forward(self,users,items):
-        result = torch.bmm(self.user_embedding(users),torch.transpose(self.item_embedding(items),1,2))
+        embedding_elementwise = self.user_embedding(users) * self.item_embedding(items)
+        result = self.predict_layer(embedding_elementwise)
         return result
 
     def __call__(self,*args):
