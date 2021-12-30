@@ -38,6 +38,7 @@ root_path ='dataset'
 train_dataset = MovieLens(root=root_path,file_size=args.size,train=True,download=download)
 test_dataset = MovieLens(root=root_path,file_size=args.size,train=False,download=False)
 max_num_users,max_num_items = train_dataset.num_user,train_dataset.num_item
+
 # dataloader for train_dataset
 dataloader_train= DataLoader(dataset=train_dataset,
                         batch_size=32,
@@ -55,7 +56,7 @@ if args.model=='MLP':
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
 elif args.model=='GMF':
-    model = GMF(num_users=32, num_items=32)
+    model = GMF(num_users=args.batch*max_num_users, num_items=args.batch*max_num_items)
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
 elif args.model=='NCF':
@@ -84,13 +85,14 @@ if __name__=='__main__' :
                 device=device,
                 print_cost=True)
     costs = train.train()
-    plt.plot(range(0, args.epochs), costs)
-    plt.xlabel('epoch')
-    plt.ylabel('Loss')
-    now = time.localtime()
-    time_now = f"{now.tm_hour:02d}:{now.tm_min:02d}:{now.tm_sec:02d} "
-    fig_file = f"loss_curve_epochs_{args.epochs}_batch_{args.batch}_size_{args.size}_lr_{args.lr}_factor_{args.factor}.png"
-    if os.path.isfile(fig_file):
-        os.remove(fig_file)
-    plt.savefig(fig_file)
-    test.test()
+    torch.save(model, './pretrain')
+    # plt.plot(range(0, args.epochs), costs)
+    # plt.xlabel('epoch')
+    # plt.ylabel('Loss')
+    # now = time.localtime()
+    # time_now = f"{now.tm_hour:02d}:{now.tm_min:02d}:{now.tm_sec:02d} "
+    # fig_file = f"loss_curve_epochs_{args.epochs}_batch_{args.batch}_size_{args.size}_lr_{args.lr}_factor_{args.factor}.png"
+    # if os.path.isfile(fig_file):
+    #     os.remove(fig_file)
+    # plt.savefig(fig_file)
+    # test.test()

@@ -48,7 +48,7 @@ class MovieLens(Dataset):
         :return:  df["userId"].nunique(),  df["movieId"].nunique()
         '''
         df = self.df
-        return df["userId"].nunique(), df["movieId"].nunique()
+        return df["userId"].max(), df["movieId"].max()
 
     def _load_data(self):
         '''
