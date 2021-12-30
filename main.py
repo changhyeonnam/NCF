@@ -3,6 +3,7 @@ import argparse
 import inspect
 from torch.utils.data import DataLoader
 import torch.optim as optim
+import matplotlib.pyplot as plt
 from utils import MovieLens
 from model.MLP import MLP
 from model.GMF import GMF
@@ -60,9 +61,9 @@ elif args.model=='NCF':
     model = NCF()
     optimizer = optim.SGD(model.parameters(),lr=args.lr)
 
-if torch.cuda.device_count() >1:
-    print("Multi gpu", torch.cuda.device_count())
-    model = torch.nn.DataParallel(model)
+#if torch.cuda.device_count() >1:
+#    print("Multi gpu", torch.cuda.device_count())
+#    model = torch.nn.DataParallel(model)
 model.to(device)
 
 optimizer = optim.Adam(model.parameters(),lr=args.lr)
