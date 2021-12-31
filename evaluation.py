@@ -35,6 +35,8 @@ class Test():
             user, item, target = user.to(device), item.to(device), target.to(device)
             pred = model(user,item)
             print(f'print pred.shape:{pred.shape}')
+            pred = torch.flatten(pred)
+            print(f'print pred.shape:{pred.shape}')
             _,indices = torch.topk(pred,top_k)
             recommends = torch.take(item,indices).cpu().numpy().tolist()
 
