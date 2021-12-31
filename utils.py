@@ -24,24 +24,26 @@ class MovieLens(Dataset):
         super(MovieLens, self).__init__()
         self.root = root
         self.train = train
+
+        # choose file_size
         if file_size =='large':
             self.file_dir='ml-latest'
         else:
             self.file_dir = 'ml-latest-'+file_size
+        # if dataset is for train dataset
+        if train:
+            # need to download
+            if download:
+                self._download_movielens()
+                self.df = self._read_ratings_csv()
+                self.df = self._preprocess()
+                self._train_test_split()
+            else:
+                # don't need to download. data from url already exists.
+                self.df = self._read_ratings_csv()
+                self.df = self._preprocess()
 
-        if download:
-            self._download_movielens()
-            self.df = self._read_ratings_csv()
-            self.df = self._preprocess()
-            self._train_test_split()
-            print(len(self.df))
-        else:
-            # don't need to download. data from url already exists.
-            self.df = self._read_ratings_csv()
-            self.df = self._preprocess()
-        self.num_user,self.num_item = self.get_numberof_users_items()
         self.data, self.target = self._load_data()
-
 
     def get_numberof_users_items(self) -> tuple:
         '''
@@ -155,8 +157,9 @@ class MovieLens(Dataset):
 
     def _train_test_split(self) -> None:
         '''
+        this function is called when downloading dataset.
         split dataset in to train and test dataset.
-        and then for each dataset, split user&item(movie) and target(ratings).
+        and then for each dataset, split [user,item(movie)] and [target(ratings)].
         Save dataset in to corresponding directory.
         :return: None
         '''

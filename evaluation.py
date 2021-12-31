@@ -31,7 +31,7 @@ class Test():
         device = self.device
         model = self.model
         top_k  = self.top_k
-        for user, item, label in self.dataloader:
+        for user, item, target in self.dataloader:
             user, item, target = user.to(device), item.to(device), target.to(device)
             pred = model(user,item)
             _,idx = torch.topk(pred,top_k)

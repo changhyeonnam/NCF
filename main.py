@@ -28,16 +28,23 @@ parser.add_argument('-lr','--lr',type=float,default=1e-3,help='learning rate')
 parser.add_argument('-dl','--download',type=str,default='False',help='Download or not')
 args = parser.parse_args()
 
+# print selected model
 print(f'model name: {args.model}')
+
+# argparse doesn't supprot boolean type
 if args.download=='True':
     download = True
 else:
     download = False
 
+# root path for dataset
 root_path ='dataset'
+# load train,test dataset
 train_dataset = MovieLens(root=root_path,file_size=args.size,train=True,download=download)
 test_dataset = MovieLens(root=root_path,file_size=args.size,train=False,download=False)
-max_num_users,max_num_items = train_dataset.num_user,train_dataset.num_item
+
+# load number of nunique user Id, item Id
+max_num_users,max_num_items = train_dataset.get_numberof_users_items()
 
 # dataloader for train_dataset
 dataloader_train= DataLoader(dataset=train_dataset,
