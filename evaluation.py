@@ -34,8 +34,9 @@ class Test():
         for user, item, target in self.dataloader:
             user, item, target = user.to(device), item.to(device), target.to(device)
             pred = model(user,item)
-            _,idx = torch.topk(pred,top_k)
-            recommends = torch.take(item,idx).numpy().tolist()
+            print(f'print pred.shape:{pred.shape}')
+            _,indices = torch.topk(pred,top_k)
+            recommends = torch.take(item,indices).cpu().numpy().tolist()
 
             item = item[0].item()
             HR.append(self.hit(item,recommends))
