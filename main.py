@@ -57,6 +57,7 @@ dataloader_test = DataLoader(dataset=test_dataset,
                              batch_size=32,
                              shuffle=True,
                              num_workers=0,
+                             drop_last=True
                              )
 if args.model=='MLP':
     model = MLP(num_usermax_num_users,num_items=max_num_items,layer=args.layer)
