@@ -34,7 +34,7 @@ class MLP(nn.Module):
         self._init_weight()
 
     def _init_weight(self):
-        if self.use_pretrian == False :
+        if not self.use_pretrian:
             nn.init.normal_(self.user_embedding.weight,std=1e-2)
             nn.init.normal_(self.item_embedding.weight,std=1e-2)
             for layer in self.MLP_model:
@@ -43,8 +43,6 @@ class MLP(nn.Module):
                     nn.init.normal_(layer.weight, std=1e-2)
                     nn.init.normal_(layer.weight, std=1e-2)
                     layer.bias.data.zero_()
-
-
 
 
     def forward(self,user,item):

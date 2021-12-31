@@ -19,7 +19,7 @@ class GMF(nn.Module):
         self._init_weight()
 
     def _init_weight(self):
-        if self.use_pretrain == False :
+        if not self.use_pretrain:
             nn.init.normal_(self.user_embedding.weight,std=1e-2)
             nn.init.normal_(self.item_embedding.weight,std=1e-2)
         for layer in self.predict_layer:

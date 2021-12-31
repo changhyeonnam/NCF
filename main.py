@@ -46,6 +46,7 @@ else:
 
 # root path for dataset
 root_path ='dataset'
+
 # load train,test dataset
 train_dataset = MovieLens(root=root_path,file_size=args.size,train=True,download=download)
 test_dataset = MovieLens(root=root_path,file_size=args.size,train=False,download=False)
@@ -59,6 +60,7 @@ dataloader_train= DataLoader(dataset=train_dataset,
                         shuffle=True,
                         num_workers=0,
                         )
+
 # dataloader for test_dataset
 dataloader_test = DataLoader(dataset=test_dataset,
                              batch_size=32,
@@ -66,6 +68,7 @@ dataloader_test = DataLoader(dataset=test_dataset,
                              num_workers=0,
                              drop_last=True
                              )
+# select model among these models ['MLP', 'GMF', 'NeuMF']
 if args.model=='MLP':
     model = MLP(num_users=args.batch*max_num_users,
                 num_items=args.batch*max_num_items,
@@ -95,7 +98,10 @@ elif args.model=='NeuMF':
 #if torch.cuda.device_count() >1:
 #    print("Multi gpu", torch.cuda.device_count())
 #    model = torch.nn.DataParallel(model)
+
 model.to(device)
+
+# objective function is log loss (Cross-entropy loss)
 criterion = torch.nn.BCELoss()
 
 if __name__=='__main__' :
@@ -108,11 +114,13 @@ if __name__=='__main__' :
                   print_cost=True)
     train.train()
     pretrained_model_path ='pretrain'
-    # if not os.path.exists(pretrained_model_path):
-    #     os.makedirs(pretrained_model_path)
-    # model_save_path = os.path.join(pretrained_model_path,args.model+'.pth')
-    # if args.model=='MLP' or 'GMF' :
-    #     torch.save(model.state_dict(),model_save_path)
+    # if not use_pretrain:
+    #     if not os.path.exists(pretrained_model_path):
+    #         os.makedirs(pretrained_model_path)
+    #     model_save_path = os.path.join(pretrained_model_path,args.model+'.pth')
+    #     if args.model=='MLP' or 'GMF' :
+    #         torch.save(model.state_dict(),model_save_path)
+
 
     test = Test(model=model,
                 criterion=criterion,
