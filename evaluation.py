@@ -38,9 +38,11 @@ class Test():
             # before flatten, pred'shape = (batch size,1,1)
             pred = torch.flatten(pred)
             # after flatten, pred'shape = (batch size)
+            print(f'pred shape{pred.shape}')
             _,indices = torch.topk(pred,top_k)
             recommends = torch.take(item,indices).cpu().numpy().tolist()
-
+            print(f'item shape:{item.shape}')
+            print(f'recommends shape:{recommends.shape}')
             item = item[0].item()
             HR.append(self.hit(item,recommends))
             NDCG.append(self.ndcg(item,recommends))
