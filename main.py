@@ -67,15 +67,26 @@ dataloader_test = DataLoader(dataset=test_dataset,
                              drop_last=True
                              )
 if args.model=='MLP':
-    model = MLP(args.batch*max_num_users,num_items=args.batch*max_num_items,num_factor=args.factor,layer=args.layer)
+    model = MLP(num_users=args.batch*max_num_users,
+                num_items=args.batch*max_num_items,
+                num_factor=args.factor,
+                layer=args.layer,
+                use_pretrain=args.use_pretrain)
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
 elif args.model=='GMF':
-    model = GMF(num_users=args.batch*max_num_users, num_items=args.batch*max_num_items,num_factor=args.factor)
+    model = GMF(num_users=args.batch*max_num_users,
+                num_items=args.batch*max_num_items,
+                num_factor=args.factor,
+                use_pretrain=args.use_pretrain)
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
 elif args.model=='NeuMF':
-    model = NeuMF(num_users=args.batch*max_num_users, num_items=args.batch*max_num_items,num_factor=args.factor,use_pretrain=use_pretrain,layer=args.layer)
+    model = NeuMF(num_users=args.batch*max_num_users,
+                  num_items=args.batch*max_num_items,
+                  num_factor=args.factor,
+                  use_pretrain=use_pretrain,
+                  layer=args.layer)
     if use_pretrain :
         optimizer =  optim.Adam(model.parameters(), lr=args.lr)
     else:

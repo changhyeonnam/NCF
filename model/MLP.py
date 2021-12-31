@@ -6,13 +6,17 @@ class MLP(nn.Module):
                  num_users:int,
                  num_items:int,
                  num_factor:int=8,
-                 layer=None,):
+                 layer=None,
+                 use_pretrain: bool = False,
+                 ):
         super(MLP,self).__init__()
 
         if layer is None:
             layer = [32,16, 8]
         self.num_users = num_users
         self.num_items = num_items
+        self.use_pretrian = use_pretrain
+
         self.user_embedding = nn.Embedding(num_users,layer[0]//2)
         self.item_embedding = nn.Embedding(num_items,layer[0]//2)
         MLP_layers=[]
@@ -27,6 +31,21 @@ class MLP(nn.Module):
                 MLP_layers.append(nn.ReLU())
         # unpacking layers in to torch.nn.Sequential
         self.MLP_model = nn.Sequential(*MLP_layers)
+        self._init_weight()
+
+    def _init_weight(self):
+        if self.use_pretrian == False :
+            nn.init.normal_(self.user_embedding.weight,std=1e-2)
+            nn.init.normal_(self.item_embedding.weight,std=1e-2)
+            for layer in self.MLP_model:
+                if isinstance(layer,nn.Linear):
+                    nn.init.normal_(layer.weight,std=1e-2)
+                    nn.init.normal_(layer.weight, std=1e-2)
+                    nn.init.normal_(layer.weight, std=1e-2)
+                    layer.bias.data.zero_()
+
+
+
 
     def forward(self,user,item):
         embed_user = self.user_embedding(user)
