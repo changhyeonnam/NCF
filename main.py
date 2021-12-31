@@ -21,7 +21,8 @@ if device == 'cuda':
 
 parser=argparse.ArgumentParser(description="Run selected model")
 parser.add_argument('-e','--epoch',type=int,default=1,help="Number of epochs")
-parser.add_argument('-b','--batch',type=int,default=32,help="Batch size")
+parser.add_argument('-b','--batch',type=int,default=256,help="Batch size")
+parser.add_argument('-tb','--test_batch',type=int,default=100,help="test Batch size")
 parser.add_argument('-l','--layer',type=None,default=[32,16,8],help='MLP layer factor list')
 parser.add_argument('-f','--factor',type=int,default=8,help='choose number of predictive factor')
 parser.add_argument('-m','--model',type=str,default='NeuMF',help='select among the following model,[MLP, GMF, NeuMF]')
@@ -57,14 +58,14 @@ max_num_users,max_num_items = train_dataset.get_numberof_users_items()
 
 # dataloader for train_dataset
 dataloader_train= DataLoader(dataset=train_dataset,
-                        batch_size=32,
+                        batch_size=args.batch,
                         shuffle=True,
                         num_workers=0,
                         )
 
 # dataloader for test_dataset
 dataloader_test = DataLoader(dataset=test_dataset,
-                             batch_size=32,
+                             batch_size=args.test_batch,
                              shuffle=True,
                              num_workers=0,
                              drop_last=True
