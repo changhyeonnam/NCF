@@ -9,7 +9,7 @@ from model.MLP import MLP
 from model.GMF import GMF
 from train import Train
 from evaluation import Test
-
+import os
 
 device = torch.device('cuda'if torch.cuda.is_available() else 'cpu')
 print(f'device: {device}')
@@ -81,7 +81,7 @@ if __name__=='__main__' :
                   print_cost=True)
     train.train()
     pretrained_model_path ='pretrain'
-    if not os.path.exists(self.pretrained_model_path):
+    if not os.path.exists(pretrained_model_path):
         os.makedirs(pretrained_model_path)
     model_save_path = os.path.join(pretrained_model_path,args.model+'.pth')
     if args.model=='MLP' or 'GMF' :
