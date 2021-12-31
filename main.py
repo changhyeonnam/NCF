@@ -29,6 +29,7 @@ parser.add_argument('-s','--size',type=str,default='small',help='Size of File')
 parser.add_argument('-lr','--lr',type=float,default=1e-3,help='learning rate')
 parser.add_argument('-dl','--download',type=str,default='False',help='Download or not')
 parser.add_argument('-p','--use_pretrain',type=str,default='False',help='use pretrained model or not')
+parser.add_argument('-k','--topk',type=int,default=10,help='choose top@k for NDCG@k, HR@k')
 args = parser.parse_args()
 
 # print selected model
@@ -126,7 +127,7 @@ if __name__=='__main__' :
                 criterion=criterion,
                 dataloader=dataloader_test,
                 device=device,
-                top_k=10,)
+                top_k=args.topk,)
     HR,NDCG = test.metrics()
     print(f'NDCG:{NDCG}, HR:{HR}')
 
