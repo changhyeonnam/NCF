@@ -90,9 +90,15 @@ if __name__=='__main__' :
     pretrained_model_path ='pretrain'
     if not os.path.exists(pretrained_model_path):
         os.makedirs(pretrained_model_path)
+<<<<<<< HEAD
     # model_save_path = os.path.join(pretrained_model_path,args.model+'.pth')
     # if args.model=='MLP' or 'GMF' :
     #     torch.save(model,model_save_path)
+=======
+    model_save_path = os.path.join(pretrained_model_path,args.model+'.pth')
+    if args.model=='MLP' or 'GMF' :
+        torch.save(model.state_dict(),model_save_path)
+>>>>>>> ef00f883677c86c7e43ccd344033c03220100045
 
     test = Test(model=model,
                 criterion=criterion,
