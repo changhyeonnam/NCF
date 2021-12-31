@@ -35,11 +35,9 @@ class Test():
         for user, item, target in self.dataloader:
             user, item, target = user.to(device), item.to(device), target.to(device)
             pred = model(user,item)
-            print(f'print pred.shape:{pred.shape}')
             # before flatten, pred'shape = (batch size,1,1)
             pred = torch.flatten(pred)
             # after flatten, pred'shape = (batch size)
-            print(f'print pred.shape:{pred.shape}')
             _,indices = torch.topk(pred,top_k)
             recommends = torch.take(item,indices).cpu().numpy().tolist()
 
