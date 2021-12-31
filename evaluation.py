@@ -1,34 +1,43 @@
 import torch
 import torch.nn as nn
-
+import numpy as np
 
 class Test():
     def __init__(self,model:torch.nn.Module,
                  dataloader:torch.utils.data.dataloader,
                  criterion:torch.nn,
                  device,
-                 print_cost=True):
+                 top_k,
+                 ):
         self.model = model
         self.dataloader = dataloader
         self.criterion = criterion
         self.device = device
-        self.print_cost = print_cost
+        self.top_k = top_k
+    def hit(self,item,pred_items):
+        if item in pred_item:
+            return 1
+        else:
+            return 0
 
-    def test(self):
-        model = self.model
-        dataloader = self.dataloader
-        criterion = self.criterion
-        total_batch = len(dataloader)
-        avg_cost = 0
+    def ndcg(self,item,pred_items):
+        if item in pred_items:
+            idx = pred_items.index(item)
+            return np.reciprocal(np.log2(index+2))
+        return 0
+
+    def metrics(self):
+        HR, NDCG = [], []
         device = self.device
-        with torch.no_grad():
-            for idx,(user,item,target) in enumerate(dataloader):
-                user,item,target = user.to(device),item.to(device),target.to(device)
-                pred = torch.flatten(model(user,item),start_dim=1)
-                cost = criterion(pred,target)
-                if self.print_cost:
-                    print(f" cost for test dataset at batch#{idx} : {cost}")
-                avg_cost+=cost
-            if self.print_cost:
-                print(f"average cost for test dataset at {avg_cost/total_batch}")
-        return avg_cost/total_batch
+        model = self.model
+        top_k  = self.top_k
+        for user, item, label in self.dataloader:
+            user, item, target = user.to(device), item.to(device), target.to(device)
+            pred = model(user,item)
+            _,idx = torch.topk(pred,top_k)
+            recommends = torch.take(item,idx).numpy().tolist()
+
+            item = item[0].item()
+            HR.append(self.hit(item,recommends))
+            NDCG.append(self.ndcg(item,recommends))
+        return np.mean(HR), np.mean(NDCG)

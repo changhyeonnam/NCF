@@ -79,20 +79,19 @@ if __name__=='__main__' :
                   dataloader=dataloader_train,
                   device=device,
                   print_cost=True)
+    train.train()
+    pretrained_model_path ='pretrain'
+    if not os.path.exists(self.pretrained_model_path):
+        os.makedirs(pretrained_model_path)
+    model_save_path = os.path.join(pretrained_model_path,args.model+'.pth')
+    if args.model=='MLP' or 'GMF' :
+        torch.save(model,model_save_path)
+
     test = Test(model=model,
                 criterion=criterion,
                 dataloader=dataloader_test,
                 device=device,
-                print_cost=True)
-    costs = train.train()
-    torch.save(model, './pretrain')
-    # plt.plot(range(0, args.epochs), costs)
-    # plt.xlabel('epoch')
-    # plt.ylabel('Loss')
-    # now = time.localtime()
-    # time_now = f"{now.tm_hour:02d}:{now.tm_min:02d}:{now.tm_sec:02d} "
-    # fig_file = f"loss_curve_epochs_{args.epochs}_batch_{args.batch}_size_{args.size}_lr_{args.lr}_factor_{args.factor}.png"
-    # if os.path.isfile(fig_file):
-    #     os.remove(fig_file)
-    # plt.savefig(fig_file)
-    # test.test()
+                top_k=10,)
+    HR,NDCG = test.metrics()
+    print(f'NDCG:{NDCG}, HR:{HR}')
+
