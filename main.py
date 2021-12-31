@@ -7,6 +7,7 @@ import torch.optim as optim
 from utils import MovieLens
 from model.MLP import MLP
 from model.GMF import GMF
+from model.NeuMF import NeuMF
 from train import Train
 from evaluation import Test
 import os
@@ -22,10 +23,12 @@ parser=argparse.ArgumentParser(description="Run selected model")
 parser.add_argument('-e','--epoch',type=int,default=1,help="Number of epochs")
 parser.add_argument('-b','--batch',type=int,default=32,help="Batch size")
 parser.add_argument('-l','--layer',type=None,default=[32,16,8],help='MLP layer factor list')
-parser.add_argument('-m','--model',type=str,default='GMF',help='MLP, GMF, NeuMF')
+parser.add_argument('-f','--factor',type=int,default=8,help='choose number of predictive factor')
+parser.add_argument('-m','--model',type=str,default='NeuMF',help='select among the following model,[MLP, GMF, NeuMF]')
 parser.add_argument('-s','--size',type=str,default='small',help='Size of File')
 parser.add_argument('-lr','--lr',type=float,default=1e-3,help='learning rate')
 parser.add_argument('-dl','--download',type=str,default='False',help='Download or not')
+parser.add_argument('-p','--use_pretrain',type=str,default='False',help='use pretrained model or not')
 args = parser.parse_args()
 
 # print selected model
@@ -36,6 +39,10 @@ if args.download=='True':
     download = True
 else:
     download = False
+if args.use_pretrain=='True':
+    use_pretrain=True
+else:
+    use_pretrain=False
 
 # root path for dataset
 root_path ='dataset'
@@ -60,23 +67,24 @@ dataloader_test = DataLoader(dataset=test_dataset,
                              drop_last=True
                              )
 if args.model=='MLP':
-    model = MLP(num_usermax_num_users,num_items=max_num_items,layer=args.layer)
+    model = MLP(args.batch*max_num_users,num_items=args.batch*max_num_items,num_factor=args.factor,layer=args.layer)
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
 elif args.model=='GMF':
-    model = GMF(num_users=args.batch*max_num_users, num_items=args.batch*max_num_items)
+    model = GMF(num_users=args.batch*max_num_users, num_items=args.batch*max_num_items,num_factor=args.factor)
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
-elif args.model=='NCF':
-    model = NCF()
-    optimizer = optim.SGD(model.parameters(),lr=args.lr)
+elif args.model=='NeuMF':
+    model = NeuMF(num_users=args.batch*max_num_users, num_items=args.batch*max_num_items,num_factor=args.factor,use_pretrain=use_pretrain,layer=args.layer)
+    if use_pretrain :
+        optimizer =  optim.Adam(model.parameters(), lr=args.lr)
+    else:
+        optimizer = optim.SGD(model.parameters(),lr=args.lr)
 
 #if torch.cuda.device_count() >1:
 #    print("Multi gpu", torch.cuda.device_count())
 #    model = torch.nn.DataParallel(model)
 model.to(device)
-
-optimizer = optim.Adam(model.parameters(),lr=args.lr)
 criterion = torch.nn.BCELoss()
 
 if __name__=='__main__' :

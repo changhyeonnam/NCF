@@ -5,24 +5,25 @@ class MLP(nn.Module):
     def __init__(self,
                  num_users:int,
                  num_items:int,
+                 num_factor:int=8,
                  layer=None,):
         super(MLP,self).__init__()
 
         if layer is None:
-            layer = [16, 8]
+            layer = [32,16, 8]
         self.num_users = num_users
         self.num_items = num_items
         self.user_embedding = nn.Embedding(num_users,layer[0]//2)
         self.item_embedding = nn.Embedding(num_items,layer[0]//2)
         MLP_layers=[]
-        for idx,num_factor in enumerate(layer):
+        for idx,factor in enumerate(layer):
             # ith MLP layer (layer[i],layer[i]//2) -> #(i+1)th MLP layer (layer[i+1],layer[i+1]//2)
             # ex) (32,16) -> (16,8) -> (8,4)
             if idx ==(len(layer)-1):
-                MLP_layers.append(nn.Linear(num_factor, 1))
+                MLP_layers.append(nn.Linear(factor, 1))
                 MLP_layers.append(nn.Sigmoid())
             else:
-                MLP_layers.append(nn.Linear(num_factor, num_factor // 2))
+                MLP_layers.append(nn.Linear(factor, factor // 2))
                 MLP_layers.append(nn.ReLU())
         # unpacking layers in to torch.nn.Sequential
         self.MLP_model = nn.Sequential(*MLP_layers)
@@ -35,4 +36,5 @@ class MLP(nn.Module):
         output = self.MLP_model(embed_input)
         return output
 
-
+    def __call__(self,*args):
+        return self.forward(*args)
