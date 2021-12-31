@@ -14,15 +14,16 @@ class Test():
         self.criterion = criterion
         self.device = device
         self.top_k = top_k
+
     def hit(self,item,pred_items):
-        if item in pred_item:
+        if item in pred_items:
             return 1
         else:
             return 0
 
     def ndcg(self,item,pred_items):
         if item in pred_items:
-            idx = pred_items.index(item)
+            index = pred_items.index(item)
             return np.reciprocal(np.log2(index+2))
         return 0
 
@@ -35,7 +36,9 @@ class Test():
             user, item, target = user.to(device), item.to(device), target.to(device)
             pred = model(user,item)
             print(f'print pred.shape:{pred.shape}')
+            # before flatten, pred'shape = (batch size,1,1)
             pred = torch.flatten(pred)
+            # after flatten, pred'shape = (batch size)
             print(f'print pred.shape:{pred.shape}')
             _,indices = torch.topk(pred,top_k)
             recommends = torch.take(item,indices).cpu().numpy().tolist()
