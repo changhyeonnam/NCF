@@ -37,9 +37,8 @@ class MovieLens(Dataset):
             self._download_movielens()
             self.df = self._read_ratings_csv()
             self._train_test_split()
-        else:
-            # don't need to download. data from url already exists.
-            self._data_label_split()
+
+        self._data_label_split()
 
         self.data, self.target = self._load_data()
 
