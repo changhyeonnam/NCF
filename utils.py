@@ -126,9 +126,11 @@ class MovieLens(Dataset):
         :return: dataframe
         '''
         df = df
+        total_df = pd.read_csv(os.path.join(self.root,self.file_dir,'ratings.csv'))
         users, items, labels = [], [], []
         user_item_set = set(zip(df['userId'], df['movieId']))
-        all_movieIds = df['movieId'].unique()
+        total_user_item_set = set(zip(total_df['userId'],total_df['movieId']))
+        all_movieIds = total_df['movieId'].unique() # 수정필요
         # negative feedback dataset ratio
         negative_ratio = self.ng_ratio
         for u, i in user_item_set:
@@ -141,7 +143,7 @@ class MovieLens(Dataset):
                 # first item random choice
                 negative_item = np.random.choice(all_movieIds)
                 # check if item and user has interaction, if true then set new value from random
-                while (u, negative_item) in user_item_set:
+                while (u, negative_item) in total_user_item_set:
                     negative_item = np.random.choice(all_movieIds)
                 users.append(u)
                 items.append(negative_item)
