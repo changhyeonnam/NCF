@@ -14,6 +14,7 @@ class MovieLens(Dataset):
                  file_size:str='small',
                  download:bool=False,
                  train:bool=True,
+                 ng_ratio:int=10,
                  )->None:
         '''
         :param root: dir for download and train,test.
@@ -24,24 +25,21 @@ class MovieLens(Dataset):
         super(MovieLens, self).__init__()
         self.root = root
         self.train = train
+        self.ng_ratio = ng_ratio
 
         # choose file_size
         if file_size =='large':
             self.file_dir='ml-latest'
         else:
             self.file_dir = 'ml-latest-'+file_size
-        # if dataset is for train dataset
-        if train:
-            # need to download
-            if download:
-                self._download_movielens()
-                self.df = self._read_ratings_csv()
-                self.df = self._preprocess()
-                self._train_test_split()
-            else:
-                # don't need to download. data from url already exists.
-                self.df = self._read_ratings_csv()
-                self.df = self._preprocess()
+
+        if download:
+            self._download_movielens()
+            self.df = self._read_ratings_csv()
+            self._train_test_split()
+        else:
+            # don't need to download. data from url already exists.
+            self._data_label_split()
 
         self.data, self.target = self._load_data()
 
@@ -58,9 +56,9 @@ class MovieLens(Dataset):
         else (Test case) load data from dir which is consist of test dataset
         :return:
         '''
-        data_file = f"{'train' if self.train else 'test'}-dataset-movieLens/dataset/dataset.csv"
+        data_file = f"{'train' if self.train else 'test'}-dataset-movieLens/dataset.csv"
         data = pd.read_csv(os.path.join(self.root, data_file))
-        label_file = f"{'train' if self.train else 'test'}-dataset-movieLens/label/label.csv"
+        label_file = f"{'train' if self.train else 'test'}-dataset-movieLens/label.csv"
         targets = pd.read_csv(os.path.join(self.root, label_file))
         print(f"loading {'train' if self.train else 'test'} file Complete!")
         return data, targets
@@ -123,17 +121,17 @@ class MovieLens(Dataset):
         print("Reading Complete!")
         return df
 
-    def _preprocess(self) :
+    def _preprocess(self,df) :
         '''
         sampling one positive feedback per four negative feedback
         :return: dataframe
         '''
-        df = self.df.copy()
+        df = df
         users, items, labels = [], [], []
         user_item_set = set(zip(df['userId'], df['movieId']))
         all_movieIds = df['movieId'].unique()
         # negative feedback dataset ratio
-        negative_ratio = 4
+        negative_ratio = self.ng_ratio
         for u, i in user_item_set:
             # positive instance
             users.append(u)
@@ -152,38 +150,34 @@ class MovieLens(Dataset):
         df = pd.DataFrame(list(zip(users, items, labels)), columns=['userId', 'movieId', 'rating'])
         return df
 
+    def _data_label_split(self) ->None:
+        '''
+        this function divde in to(user,movie) and (rating)
+        :return: None
+        '''
+        df_dir = os.path.join(self.root,f"{'train' if self.train else 'test'}-dataset-movieLens")
+        df = pd.read_csv(df_dir+'.csv',sep=',')
 
-
+        if not os.path.isdir(df_dir):
+            os.makedirs(df_dir)
+        dataset_dir = os.path.join(df_dir, 'dataset.csv')
+        label_dir = os.path.join(df_dir, 'label.csv')
+        dataset, label = df.iloc[:,:-1], df.iloc[:,[-1]]
+        dataset.to_csv(dataset_dir)
+        label.to_csv(label_dir)
 
     def _train_test_split(self) -> None:
         '''
         this function is called when downloading dataset.
         split dataset in to train and test dataset.
-        and then for each dataset, split [user,item(movie)] and [target(ratings)].
-        Save dataset in to corresponding directory.
         :return: None
         '''
         df = self.df.copy()
         print('Spliting Traingset & Testset')
         # Since MovieLens dataset is user-based dataset, I used Stratified k-fold.
         train, test,dummy_1,dummy_2 = train_test_split(df,df['userId'],test_size=0.2,stratify=df['userId']) # should add stratify
-        train_dataset_dir = os.path.join(self.root, 'train-dataset-movieLens', 'dataset')
-        train_label_dir = os.path.join(self.root, 'train-dataset-movieLens', 'label')
-        test_dataset_dir = os.path.join(self.root, 'test-dataset-movieLens', 'dataset')
-        test_label_dir = os.path.join(self.root, 'test-dataset-movieLens', 'label')
-        dir_list = [train_dataset_dir, train_label_dir, test_dataset_dir, test_label_dir]
-        for dir in dir_list:
-            if not os.path.exists(dir):
-                os.makedirs(dir)
-        train_dataset, train_label = train.iloc[:, :-1], train.iloc[:, [-1]]
-        test_dataset, test_label = test.iloc[:, :-1], test.iloc[:, [-1]]
-        dataset = [train_dataset, train_label, test_dataset, test_label]
-        data_dir_dict = {}
-        for i in range(0, 4):
-            data_dir_dict[dir_list[i]] = dataset[i]
-        for i, (dir, df) in enumerate(data_dir_dict.items()):
-            if i % 2 == 0:
-                df.to_csv(dir + '/dataset.csv')
-            else:
-                df.to_csv(dir + '/label.csv')
+        train_dir = os.path.join(self.root, 'train-dataset-movieLens.csv')
+        test_dir = os.path.join(self.root, 'test-dataset-movieLens.csv')
+        train.to_csv(train_dir)
+        test.to_csv(test_dir)
         print('Spliting Complete!')
