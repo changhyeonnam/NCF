@@ -157,7 +157,7 @@ class MovieLens(Dataset):
         '''
         df_dir = os.path.join(self.root,f"{'train' if self.train else 'test'}-dataset-movieLens")
         df = pd.read_csv(df_dir+'.csv',sep=',')
-
+        df = self._preprocess(df)
         if not os.path.isdir(df_dir):
             os.makedirs(df_dir)
         dataset_dir = os.path.join(df_dir, 'dataset.csv')
