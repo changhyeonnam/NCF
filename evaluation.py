@@ -15,15 +15,15 @@ class Test():
         self.device = device
         self.top_k = top_k
 
-    def hit(self,gt_item,pred_items):
+    def hit(self,gt_item, pred_items):
         if gt_item in pred_items:
             return 1
         return 0
 
-    def ndcg(self,item,pred_items):
-        if item in pred_items:
-            index = pred_items.index(item)
-            return np.reciprocal(np.log2(index+2))
+    def ndcg(self,gt_item, pred_items):
+        if gt_item in pred_items:
+            index = pred_items.index(gt_item)
+            return np.reciprocal(np.log2(index + 2))
         return 0
 
     def metrics(self):
