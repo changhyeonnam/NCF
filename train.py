@@ -36,7 +36,7 @@ class Train():
                 optimizer.step()
                 avg_cost += cost.item() / total_batch
             if self.print_cost:
-                print('Epoch:', '%04d' % (epochs + 1), 'cost =', '{:.9f}'.format(avg_cost))
+                print(f'Epoch:, {(epochs + 1):04}, {criterion._get_name()}=, {avg_cost:.9f}')
             loss.append(avg_cost)
         if self.print_cost:
             print('Learning finished')
