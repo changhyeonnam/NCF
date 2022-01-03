@@ -47,7 +47,7 @@ else:
     use_pretrain=False
 
 # root path for dataset
-root ='data'
+root_path='data'
 
 # load train,test dataset
 train_dataset = MovieLens(root=root_path,train=True,ng_ratio=4)
