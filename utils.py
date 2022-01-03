@@ -32,7 +32,7 @@ class MovieLens(Dataset):
         '''
         :return:  df["userId"].nunique(),  df["movieId"].nunique()
         '''
-        df = self.df
+        df = pd.read_csv(os.path.join(self.root, 'ml-1m.total.rating'))
         return df["userId"].max(), df["movieId"].max()
 
     def _load_data(self):
@@ -112,7 +112,7 @@ class MovieLens(Dataset):
         :return: dataframe
         '''
         df = df
-        total_df = pd.read_csv(os.path.join(self.root,self.file_dir,'ratings.csv'))
+        total_df = pd.read_csv(os.path.join(self.root,'ml-1m.total.rating'))
         users, items, labels = [], [], []
         user_item_set = set(zip(df['userId'], df['movieId']))
         total_user_item_set = set(zip(total_df['userId'],total_df['movieId']))
@@ -153,7 +153,6 @@ class MovieLens(Dataset):
         dataset, label = df.iloc[:,:-1], df.iloc[:,[-1]]
         dataset.to_csv(dataset_dir)
         label.to_csv(label_dir)
-
     # def _train_test_split(self) -> None:
     #     '''
     #     this function is called when downloading dataset.
