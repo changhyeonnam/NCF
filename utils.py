@@ -128,7 +128,7 @@ class MovieLens(Dataset):
                 # first item random choice
                 negative_item = np.random.choice(all_movieIds)
                 # check if item and user has interaction, if true then set new value from random
-                while (u, negative_item) in total_user_item_set:
+                while (u, negative_item) in user_item_set:
                     negative_item = np.random.choice(all_movieIds)
                 users.append(u)
                 items.append(negative_item)
