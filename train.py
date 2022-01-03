@@ -1,4 +1,6 @@
 import torch
+from evaluation import Test
+
 class Train():
     def __init__(self,model:torch.nn.Module
                  ,optimizer:torch.optim,
@@ -24,6 +26,15 @@ class Train():
         total_batch = len(dataloader)
         loss = []
         device = self.device
+
+
+        test_dataset = MovieLens(root=root_path, train=False, ng_ratio=99)
+        test = Test(model=model,
+                    criterion=criterion,
+                    dataloader=dataloader_test,
+                    device=device,
+                    top_k=args.topk, )
+
         for epochs in range(0,total_epochs):
             avg_cost = 0
             for user,item,target in dataloader:
@@ -38,6 +49,8 @@ class Train():
             if self.print_cost:
                 print(f'Epoch:, {(epochs + 1):04}, {criterion._get_name()}=, {avg_cost:.9f}')
             loss.append(avg_cost)
+            HR, NDCG = test.metrics()
+
         if self.print_cost:
             print('Learning finished')
         return loss
