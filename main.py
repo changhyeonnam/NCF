@@ -9,7 +9,7 @@ from model.MLP import MLP
 from model.GMF import GMF
 from model.NeuMF import NeuMF
 from train import Train
-from evaluation import Test
+from evaluation import metrics
 import os
 
 device = torch.device('cuda'if torch.cuda.is_available() else 'cpu')
@@ -109,17 +109,13 @@ criterion = torch.nn.BCELoss()
 
 if __name__=='__main__' :
 
-    test = Test(model=model,
-                criterion=criterion,
-                dataloader=dataloader_test,
-                device=device,
-                top_k=args.topk,)
+
 
     train = Train(model=model,
                   optimizer=optimizer,
                   criterion=criterion,
                   epochs=args.epoch,
-                  test_obj=test,
+                  test_obj=dataloader_test,
                   dataloader=dataloader_train,
                   device=device,
                   print_cost=True,)
@@ -133,6 +129,6 @@ if __name__=='__main__' :
     #         torch.save(model.state_dict(),model_save_path)
 
 
-    HR,NDCG = test.metrics()
+    HR,NDCG = metrics(model,test_loader=dataloader_test,top_k=args.topk)
     print(f'NDCG:{NDCG}, HR:{HR}')
 

@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+from evaluation import metrics
 class Train():
     def __init__(self,model:torch.nn.Module
                  ,optimizer:torch.optim,
@@ -44,7 +45,7 @@ class Train():
                 avg_cost += cost.item() / total_batch
             if self.print_cost:
                 print(f'Epoch: {(epochs + 1):04}, {criterion._get_name()}= {avg_cost:.9f}')
-                HR, NDCG = test.metrics()
+                HR, NDCG = metrics(model,test,10)
                 print("HR: {:.3f}\tNDCG: {:.3f}".format(np.mean(HR), np.mean(NDCG)))
 
             loss.append(avg_cost)

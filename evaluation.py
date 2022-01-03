@@ -1,47 +1,34 @@
-import torch
-import torch.nn as nn
 import numpy as np
-
-class Test():
-    def __init__(self,model:torch.nn.Module,
-                 dataloader:torch.utils.data.dataloader,
-                 criterion:torch.nn,
-                 device,
-                 top_k,
-                 ):
-        self.model = model
-        self.dataloader = dataloader
-        self.criterion = criterion
-        self.device = device
-        self.top_k = top_k
-
-    def hit(self,gt_item, pred_items):
-        if gt_item in pred_items:
-            return 1
-        return 0
-
-    def ndcg(self,gt_item, pred_items):
-        if gt_item in pred_items:
-            index = pred_items.index(gt_item)
-            return np.reciprocal(np.log2(index + 2))
-        return 0
-
-    def metrics(self):
-        HR, NDCG = [], []
-        device = self.device
-        model = self.model
-        top_k  = self.top_k
-        for user, item, target in self.dataloader:
-            user, item, target = user.to(device), item.to(device), target.float().to(device)
-
-            pred = model(user,item)
-            _,indices = torch.topk(pred,top_k)
-            recommends = torch.take(item,indices).cpu().numpy().tolist()
-
-            gt_item = item[0].item()
-            HR.append(self.hit(gt_item,recommends))
-            NDCG.append(self.ndcg(gt_item,recommends))
+import torch
 
 
+def hit(gt_item, pred_items):
+	if gt_item in pred_items:
+		return 1
+	return 0
 
-        return np.mean(HR), np.mean(NDCG)
+
+def ndcg(gt_item, pred_items):
+	if gt_item in pred_items:
+		index = pred_items.index(gt_item)
+		return np.reciprocal(np.log2(index+2))
+	return 0
+
+
+def metrics(model, test_loader, top_k):
+	HR, NDCG = [], []
+
+	for user, item, label in test_loader:
+		user = user.cuda()
+		item = item.cuda()
+
+		predictions = model(user, item)
+		_, indices = torch.topk(predictions, top_k)
+		recommends = torch.take(
+				item, indices).cpu().numpy().tolist()
+
+		gt_item = item[0].item()
+		HR.append(hit(gt_item, recommends))
+		NDCG.append(ndcg(gt_item, recommends))
+
+	return np.mean(HR), np.mean(NDCG)
