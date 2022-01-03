@@ -1,5 +1,5 @@
 import torch
-
+import numpy as np
 class Train():
     def __init__(self,model:torch.nn.Module
                  ,optimizer:torch.optim,
