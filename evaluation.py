@@ -33,13 +33,18 @@ class Test():
         model = self.model
         top_k  = self.top_k
         for user, item, target in self.dataloader:
-            user, item, target = user.to(device), item.to(device), target.to(device)
+            user, item, target = user.to(device), item.to(device), target.float.to(device)
             pred = model(user,item)
             # before flatten, pred'shape = (batch size,1,1)
-            # pred = torch.flatten(pred)
+            pred = torch.flatten(pred)
             # after flatten, pred'shape = (batch size)
             _,indices = torch.topk(pred,top_k)
             recommends = torch.take(item,indices).cpu().numpy().tolist()
+
+            _, indices = torch.topk(predictions, top_k)
+            recommends = torch.take(
+                item, indices).cpu().numpy().tolist()
+
             gt_item = item[0].item()
             HR.append(self.hit(gt_item,recommends))
             NDCG.append(self.ndcg(gt_item,recommends))

@@ -34,6 +34,9 @@ class NeuMF(nn.Module):
                     layer.bias.data.zero_()
 
     def forward(self,user,item):
+        # print(self.GMF(user,item).shape)
+        # print(self.MLP(user,item).shape)
         before_last_layer_output = torch.cat((self.GMF(user,item),self.MLP(user,item)),dim=-1)
+        # print(before_last_layer_output.shape)
         output = self.last_layer(before_last_layer_output)
         return output
