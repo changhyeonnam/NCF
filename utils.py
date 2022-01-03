@@ -25,8 +25,8 @@ class MovieLens(Dataset):
         self.train = train
         self.ng_ratio = ng_ratio
 
-        self._data_label_split()
-        self.data, self.target = self._load_data()
+        # self._data_label_split()
+        self.users, self.items, self.labels = self._preprocess()
 
     def get_numberof_users_items(self) -> tuple:
         '''
@@ -35,25 +35,25 @@ class MovieLens(Dataset):
         df = pd.read_csv(os.path.join(self.root, 'ml-1m.total.rating'))
         return df["userId"].max(), df["movieId"].max()
 
-    def _load_data(self):
-        '''
-        if Train=True, load data from dir which is consist of train dataset
-        else (Test case) load data from dir which is consist of test dataset
-        :return:
-        '''
-        data_file = f"ml-1m.{'train' if self.train else 'test'}.data.rating"
-        data = pd.read_csv(os.path.join(self.root, data_file))
-        label_file = f"m1-1m.{'train' if self.train else 'test'}.label.rating"
-        targets = pd.read_csv(os.path.join(self.root, label_file))
-        print(f"loading {'train' if self.train else 'test'} file Complete!")
-        return data, targets
+    # def _load_data(self):
+    #     '''
+    #     if Train=True, load data from dir which is consist of train dataset
+    #     else (Test case) load data from dir which is consist of test dataset
+    #     :return:
+    #     '''
+    #     data_file = f"ml-1m.{'train' if self.train else 'test'}.data.rating"
+    #     data = pd.read_csv(os.path.join(self.root, data_file))
+    #     label_file = f"m1-1m.{'train' if self.train else 'test'}.label.rating"
+    #     targets = pd.read_csv(os.path.join(self.root, label_file))
+    #     print(f"loading {'train' if self.train else 'test'} file Complete!")
+    #     return data, targets
 
     def __len__(self) -> int:
         '''
         get lenght of data
         :return: len(data)
         '''
-        return len(self.data)
+        return len(self.users)
 
 
     def __getitem__(self, index):
@@ -63,10 +63,7 @@ class MovieLens(Dataset):
         :param index: idex for dataset.
         :return: user,item,rating
         '''
-        user = torch.LongTensor([self.data.userId.values[index]])
-        item = torch.LongTensor([self.data.movieId.values[index]])
-        target = torch.FloatTensor([self.target.rating.values[index]])
-        return user,item,target
+        return self.users[index], self.items[index], self.labels[index]
 
     # def _download_movielens(self) -> None:
     #     '''
@@ -106,12 +103,14 @@ class MovieLens(Dataset):
     #     print("Reading Complete!")
     #     return df
 
-    def _preprocess(self,df) :
+    def _preprocess(self) :
         '''
         sampling one positive feedback per four negative feedback
         :return: dataframe
         '''
-        df = df
+        dataframe_file = f"ml-1m.{'train' if self.train else 'test'}.rating"
+        df_dir = os.path.join(self.root,dataframe_file)
+        df = pd.read_csv(df_dir,sep=',')
         total_df = pd.read_csv(os.path.join(self.root,'ml-1m.total.rating'))
         users, items, labels = [], [], []
         user_item_set = set(zip(df['userId'], df['movieId']))
@@ -134,25 +133,26 @@ class MovieLens(Dataset):
                 users.append(u)
                 items.append(negative_item)
                 labels.append(0)
-        df = pd.DataFrame(list(zip(users, items, labels)), columns=['userId', 'movieId', 'rating'])
-        return df
 
-    def _data_label_split(self) ->None:
-        '''
-        this function divde in to(user,movie) and (rating)
-        :return: None
-        '''
-        dataframe_file = f"ml-1m.{'train' if self.train else 'test'}.rating"
-        df_dir = os.path.join(self.root,dataframe_file)
-        df = pd.read_csv(df_dir,sep=',')
-        df = self._preprocess(df)
-        data_file = f"ml-1m.{'train' if self.train else 'test'}.data.rating"
-        label_file = f"m1-1m.{'train' if self.train else 'test'}.label.rating"
-        dataset_dir = os.path.join(self.root, data_file)
-        label_dir = os.path.join(self.root, label_file)
-        dataset, label = df.iloc[:,:-1], df.iloc[:,[-1]]
-        dataset.to_csv(dataset_dir)
-        label.to_csv(label_dir)
+        return torch.tensor(users), torch.tensor(items), torch.tensor(labels)
+
+
+    # def _data_label_split(self) ->None:
+    #     '''
+    #     this function divde in to(user,movie) and (rating)
+    #     :return: None
+    #     '''
+    #     dataframe_file = f"ml-1m.{'train' if self.train else 'test'}.rating"
+    #     df_dir = os.path.join(self.root,dataframe_file)
+    #     df = pd.read_csv(df_dir,sep=',')
+    #     df = self._preprocess(df)
+    #     data_file = f"ml-1m.{'train' if self.train else 'test'}.data.rating"
+    #     label_file = f"m1-1m.{'train' if self.train else 'test'}.label.rating"
+    #     dataset_dir = os.path.join(self.root, data_file)
+    #     label_dir = os.path.join(self.root, label_file)
+    #     dataset, label = df.iloc[:,:-1], df.iloc[:,[-1]]
+    #     dataset.to_csv(dataset_dir)
+    #     label.to_csv(label_dir)
     # def _train_test_split(self) -> None:
     #     '''
     #     this function is called when downloading dataset.

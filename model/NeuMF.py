@@ -36,7 +36,11 @@ class NeuMF(nn.Module):
     def forward(self,user,item):
         # print(self.GMF(user,item).shape)
         # print(self.MLP(user,item).shape)
+        # print(f'NeMF <- GMF {self.GMF(user,item).shape}, MLP{self.MLP(user,item).shape}')
         before_last_layer_output = torch.cat((self.GMF(user,item),self.MLP(user,item)),dim=-1)
-        # print(before_last_layer_output.shape)
+        # print(f'NeuMF before_last_layer_output:{before_last_layer_output.shape}')
+
         output = self.last_layer(before_last_layer_output)
-        return output
+        # print(f'NeuMF output shape:{output.view(-1).shape}, not view:{output.shape}')
+
+        return output.view(-1)

@@ -51,6 +51,7 @@ class MLP(nn.Module):
         # dim=-1 means torch.cat(((2,3),(2,3)),-1) => (2,6) ((4,3))
         embed_input = torch.cat((embed_user,embed_item),dim=-1)
         output = self.MLP_model(embed_input)
+        # print(f'MLP output shape:{output.view(-1).shape}, not view:{output.shape}')
         return output
 
     def __call__(self,*args):

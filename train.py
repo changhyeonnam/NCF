@@ -32,11 +32,12 @@ class Train():
         for epochs in range(0,total_epochs):
             avg_cost = 0
             for user,item,target in dataloader:
-                user,item,target=user.to(device),item.to(device),target.float.to(device)
+                user,item,target=user.to(device),item.to(device),target.float().to(device)
                 optimizer.zero_grad()
-                val = model(user, item)
-                pred = torch.flatten(val,start_dim=1).to(device)
-
+                print(f'user:{user.shape}, item:{item.shape}')
+                pred = model(user, item)
+                print(f'target:{target.shape}')
+                print(f'pred:{pred.shape}')
                 cost = criterion(pred,target)
                 cost.backward()
                 optimizer.step()

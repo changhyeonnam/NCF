@@ -30,6 +30,9 @@ class GMF(nn.Module):
     def forward(self,users,items):
         embedding_elementwise = self.user_embedding(users) * self.item_embedding(items)
         output = self.predict_layer(embedding_elementwise)
+
+        # print(f'GMF output shape:{output.view(-1).shape}, not view:{output.shape}')
+
         return output
 
     def __call__(self,*args):
