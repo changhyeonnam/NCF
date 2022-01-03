@@ -15,11 +15,10 @@ class Test():
         self.device = device
         self.top_k = top_k
 
-    def hit(self,item,pred_items):
-        if item in pred_items:
+    def hit(self,gt_item,pred_items):
+        if gt_item in pred_items:
             return 1
-        else:
-            return 0
+        return 0
 
     def ndcg(self,item,pred_items):
         if item in pred_items:
@@ -37,7 +36,6 @@ class Test():
 
             pred = model(user,item)
             _,indices = torch.topk(pred,top_k)
-            print(f'pred_shape :{pred.shape}')
             recommends = torch.take(item,indices).cpu().numpy().tolist()
 
             gt_item = item[0].item()

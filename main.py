@@ -52,6 +52,7 @@ root_path='data'
 # load train,test dataset
 train_dataset = MovieLens(root=root_path,train=True,ng_ratio=4)
 test_dataset = MovieLens(root=root_path,train=False,ng_ratio=99)
+print('data loaded!')
 
 # load number of nunique user Id, item Id
 max_num_users,max_num_items = train_dataset.get_numberof_users_items()
