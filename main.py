@@ -107,13 +107,21 @@ model.to(device)
 criterion = torch.nn.BCELoss()
 
 if __name__=='__main__' :
+
+    test = Test(model=model,
+                criterion=criterion,
+                dataloader=dataloader_test,
+                device=device,
+                top_k=args.topk,)
+
     train = Train(model=model,
                   optimizer=optimizer,
                   criterion=criterion,
                   epochs=args.epoch,
+                  test_obj=test,
                   dataloader=dataloader_train,
                   device=device,
-                  print_cost=True)
+                  print_cost=True,)
     train.train()
     pretrained_model_path ='pretrain'
     # if not use_pretrain:
@@ -124,11 +132,6 @@ if __name__=='__main__' :
     #         torch.save(model.state_dict(),model_save_path)
 
 
-    test = Test(model=model,
-                criterion=criterion,
-                dataloader=dataloader_test,
-                device=device,
-                top_k=args.topk,)
     HR,NDCG = test.metrics()
     print(f'NDCG:{NDCG}, HR:{HR}')
 

@@ -1,5 +1,4 @@
 import torch
-from evaluation import Test
 
 class Train():
     def __init__(self,model:torch.nn.Module
@@ -7,6 +6,7 @@ class Train():
                  epochs:int,
                  dataloader:torch.utils.data.dataloader,
                  criterion:torch.nn,
+                 test_obj,
                  device='cpu',
                  print_cost=True):
         self.model = model
@@ -16,6 +16,7 @@ class Train():
         self.criterion = criterion
         self.device = device
         self.print_cost = print_cost
+        self.test = test_obj
 
     def train(self):
         model = self.model
@@ -26,14 +27,7 @@ class Train():
         total_batch = len(dataloader)
         loss = []
         device = self.device
-
-
-        test_dataset = MovieLens(root=root_path, train=False, ng_ratio=99)
-        test = Test(model=model,
-                    criterion=criterion,
-                    dataloader=dataloader_test,
-                    device=device,
-                    top_k=args.topk, )
+        test = self.test
 
         for epochs in range(0,total_epochs):
             avg_cost = 0
