@@ -48,8 +48,10 @@ class Train():
                 avg_cost += cost.item() / total_batch
             if self.print_cost:
                 print(f'Epoch:, {(epochs + 1):04}, {criterion._get_name()}=, {avg_cost:.9f}')
+                HR, NDCG = test.metrics()
+                print(f'NDCG:{NDCG}, HR:{HR}')
+
             loss.append(avg_cost)
-            HR, NDCG = test.metrics()
 
         if self.print_cost:
             print('Learning finished')
