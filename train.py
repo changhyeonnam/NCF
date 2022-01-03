@@ -45,7 +45,7 @@ class Train():
             if self.print_cost:
                 print(f'Epoch: {(epochs + 1):04}, {criterion._get_name()}= {avg_cost:.9f}')
                 HR, NDCG = test.metrics()
-                print(f'NDCG:{NDCG}, HR:{HR}')
+                print("HR: {:.3f}\tNDCG: {:.3f}".format(np.mean(HR), np.mean(NDCG)))
 
             loss.append(avg_cost)
 

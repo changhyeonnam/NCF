@@ -42,4 +42,6 @@ class Test():
             HR.append(self.hit(gt_item,recommends))
             NDCG.append(self.ndcg(gt_item,recommends))
 
+
+
         return np.mean(HR), np.mean(NDCG)
