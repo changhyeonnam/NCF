@@ -23,13 +23,14 @@ class NeuMF(nn.Module):
         else:
             self.GMF=GMF(num_users,num_items,num_factor,use_pretrain=use_pretrain)
             self.MLP=MLP(num_users,num_items,num_factor,layer,use_pretrain=use_pretrain)
-        self.predict_layer=nn.Linear(num_factor*2,1)
-        self._init_weight()
+        self.predict_layer=nn.Sequential(nn.Linear(num_factor*2,1),nn.Sigmoid())
+
+        #self._init_weight()
 
     def _init_weight(self):
 
         nn.init.kaiming_uniform_(self.predict_layer.weight,
-                                 a=1, nonlinearity='sigmoid')
+                                 a=0, nonlinearity='sigmoid')
         # self.predict_layer.bias.data.zero_()
 
     def forward(self,user,item):
