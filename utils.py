@@ -111,7 +111,7 @@ class MovieLens(Dataset):
         dataframe_file = f"ml-1m.{'train' if self.train else 'test'}.rating"
         df_dir = os.path.join(self.root,dataframe_file)
         df = pd.read_csv(df_dir,sep=',')
-        total_df = pd.read_csv(os.path.join(self.root,'ml-1m.total.rating'))
+        total_df = pd.read_csv(os.path.join(self.root,'ml-1m.train.rating'))
         users, items, labels = [], [], []
         user_item_set = set(zip(df['userId'], df['movieId']))
         total_user_item_set = set(zip(total_df['userId'],total_df['movieId']))
@@ -128,7 +128,7 @@ class MovieLens(Dataset):
                 # first item random choice
                 negative_item = np.random.choice(all_movieIds)
                 # check if item and user has interaction, if true then set new value from random
-                while (u, negative_item) in user_item_set:
+                while (u, negative_item) in total_user_item_set:
                     negative_item = np.random.choice(all_movieIds)
                 users.append(u)
                 items.append(negative_item)

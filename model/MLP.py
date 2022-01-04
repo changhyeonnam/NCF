@@ -31,7 +31,7 @@ class MLP(nn.Module):
                 MLP_layers.append(nn.ReLU())
         # unpacking layers in to torch.nn.Sequential
         self.MLP_model = nn.Sequential(*MLP_layers)
-        # self._init_weight()
+        self._init_weight()
 
     def _init_weight(self):
         if not self.use_pretrian:
@@ -40,8 +40,6 @@ class MLP(nn.Module):
             for layer in self.MLP_model:
                 if isinstance(layer,nn.Linear):
                     nn.init.normal_(layer.weight,std=1e-2)
-                    nn.init.normal_(layer.weight, std=1e-2)
-                    nn.init.normal_(layer.weight, std=1e-2)
                     layer.bias.data.zero_()
 
 
