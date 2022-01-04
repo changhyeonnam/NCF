@@ -23,7 +23,7 @@ if device == 'cuda':
 parser=argparse.ArgumentParser(description="Run selected model")
 parser.add_argument('-e','--epoch',type=int,default=1,help="Number of epochs")
 parser.add_argument('-b','--batch',type=int,default=256,help="Batch size")
-parser.add_argument('-tb','--test_batch',type=int,default=32,help="test Batch size")
+parser.add_argument('-tb','--test_batch',type=int,default=100,help="test Batch size")
 parser.add_argument('-l','--layer',type=None,default=[32,16,8],help='MLP layer factor list')
 parser.add_argument('-f','--factor',type=int,default=8,help='choose number of predictive factor')
 parser.add_argument('-m','--model',type=str,default='NeuMF',help='select among the following model,[MLP, GMF, NeuMF]')
@@ -52,7 +52,7 @@ root_path='data'
 
 # load train,test dataset
 train_dataset = MovieLens(root=root_path,train=True,ng_ratio=4)
-test_dataset = MovieLens(root=root_path,train=False,ng_ratio=31)
+test_dataset = MovieLens(root=root_path,train=False,ng_ratio=99)
 print('data loaded!')
 
 # load number of nunique user Id, item Id
@@ -112,15 +112,15 @@ if __name__=='__main__' :
 
 
 
-    # train = Train(model=model,
-    #               optimizer=optimizer,
-    #               criterion=criterion,
-    #               epochs=args.epoch,
-    #               test_obj=dataloader_test,
-    #               dataloader=dataloader_train,
-    #               device=device,
-    #               print_cost=True,)
-    # train.train()
+    train = Train(model=model,
+                  optimizer=optimizer,
+                  criterion=criterion,
+                  epochs=args.epoch,
+                  test_obj=dataloader_test,
+                  dataloader=dataloader_train,
+                  device=device,
+                  print_cost=True,)
+    train.train()
     pretrained_model_path ='pretrain'
     # if not use_pretrain:
     #     if not os.path.exists(pretrained_model_path):
