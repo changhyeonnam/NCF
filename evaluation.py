@@ -15,7 +15,7 @@ def ndcg(gt_item, pred_items):
 	return 0
 
 
-def metrics(model, test_loader, top_k,device):
+def metrics(model, test_loader, top_k, device):
 	HR, NDCG = [], []
 
 	for user, item, label in test_loader:
