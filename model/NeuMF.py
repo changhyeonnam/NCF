@@ -23,7 +23,7 @@ class NeuMF(nn.Module):
         else:
             self.GMF=GMF(num_users,num_items,num_factor,use_pretrain=use_pretrain)
             self.MLP=MLP(num_users,num_items,num_factor,layer,use_pretrain=use_pretrain)
-        self.last_layer=nn.Sequential(nn.Linear(2,1),nn.Sigmoid())
+        self.last_layer=nn.Sequential(nn.Linear(num_factor*2,1),nn.Sigmoid())
         # self._init_weight()
 
     def _init_weight(self):

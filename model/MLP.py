@@ -16,19 +16,18 @@ class MLP(nn.Module):
         self.num_users = num_users
         self.num_items = num_items
         self.use_pretrian = use_pretrain
-
         self.user_embedding = nn.Embedding(num_users,layer[0]//2)
         self.item_embedding = nn.Embedding(num_items,layer[0]//2)
         MLP_layers=[]
         for idx,factor in enumerate(layer):
             # ith MLP layer (layer[i],layer[i]//2) -> #(i+1)th MLP layer (layer[i+1],layer[i+1]//2)
             # ex) (32,16) -> (16,8) -> (8,4)
-            if idx ==(len(layer)-1):
-                MLP_layers.append(nn.Linear(factor, 1))
-                MLP_layers.append(nn.Sigmoid())
-            else:
-                MLP_layers.append(nn.Linear(factor, factor // 2))
-                MLP_layers.append(nn.ReLU())
+            # if idx ==(len(layer)-1):
+            #     MLP_layers.append(nn.Linear(factor, 1))
+            #     MLP_layers.append(nn.Sigmoid())
+            # else:
+            MLP_layers.append(nn.Linear(factor, factor // 2))
+            MLP_layers.append(nn.ReLU())
         # unpacking layers in to torch.nn.Sequential
         self.MLP_model = nn.Sequential(*MLP_layers)
         self._init_weight()
