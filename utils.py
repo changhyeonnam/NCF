@@ -8,11 +8,87 @@ from zipfile import ZipFile
 import requests
 from sklearn.model_selection  import train_test_split
 import random
+
+
+
+
+class Download_read_csv():
+    def __init__(self, root, filename, filetype, download):
+        self.root = root
+        self.filename = filename
+        self.filetype = filetype
+        self.download = download
+        if self.download:
+            self.download_movielens()
+            self.ratings = self.read_ratings_csv()
+        else:
+            self.ratings = self.read_ratings_csv()
+
+    def download_movielens(self) -> None:  # "-> None" 리턴값을 나타내는 것
+        root_path = self.root  # 'dataset'
+        file_name = self.filename
+        file_type = self.filetype
+        url = "http://files.grouplens.org/datasets/movielens/" + file_name + file_type
+
+        # Downloading the file by sending the request to the URL
+        req = requests.get(url)
+
+        # 최초 directory 생성
+        if not os.path.exists(root_path):
+            os.makedirs(root_path)
+
+        with open(os.path.join(root_path, file_name + file_type), 'wb') as output_file:
+            output_file.write(req.content)
+
+        # extracting the zip file contents
+        zipfile = ZipFile(BytesIO(req.content))
+        zipfile.extractall(path=root_path)
+
+        print('Dataset Download Complete')
+
+    def read_ratings_csv(self):
+        ratings = pd.read_csv(self.root + '/' + self.filename + '/' + 'ratings.csv')
+        ratings = ratings.drop("timestamp", axis=1)
+        ratings = sklearn.utils.shuffle(ratings)
+        print("ratings.csv Read Complete")
+        return ratings
+
+    def data_processing(self):
+        train_ratings = self.ratings.copy()
+        test_ratings = pd.DataFrame()
+
+        for i in self.ratings['userId'].unique().tolist():
+            for j in self.ratings['userId'].index:
+                if (self.ratings.iloc[j, 0] == i):
+                    test_ratings = pd.concat([test_ratings, pd.DataFrame(self.ratings.iloc[j, :]).T], axis=0)
+                    train_ratings = train_ratings.drop(j)
+                    break
+        # explicit feedback -> implicit feedback
+        train_ratings.loc[:, 'rating'] = 1
+        test_ratings.loc[:, 'rating'] = 1
+
+        train_ratings = train_ratings.astype(int)
+        test_ratings = test_ratings.astype(int)
+
+        '''wrong train test split
+        x = self.ratings.copy()
+        y = self.ratings['userId']
+        # stratified sampling
+        train_ratings, test_ratings, y_train, y_test = train_test_split(x, y, test_size=0.2, stratify=y)
+        '''
+        print(len(train_ratings),len(test_ratings),len(self.ratings))
+        return train_ratings, test_ratings,self.ratings
+
+
+
 class MovieLens(Dataset):
     def __init__(self,
+                 dataframe: pd.DataFrame,
+                 total_dataframe: pd.DataFrame,
                  root:str='data',
                  train:bool=True,
                  ng_ratio:int=10,
+                 filesize:str='large',
                  )->None:
         '''
         :param root: dir for download and train,test.
@@ -24,6 +100,12 @@ class MovieLens(Dataset):
         self.root = root
         self.train = train
         self.ng_ratio = ng_ratio
+
+        self.filesize=filesize
+        if self.filesize=='small':
+            self.df = dataframe
+            self.total_df = total_dataframe
+
 
         # self._data_label_split()
         self.users, self.items, self.labels = self._preprocess()
@@ -108,14 +190,24 @@ class MovieLens(Dataset):
         sampling one positive feedback per four negative feedback
         :return: dataframe
         '''
-        dataframe_file = f"ml-1m.{'train' if self.train else 'test'}.rating"
-        df_dir = os.path.join(self.root,dataframe_file)
-        df = pd.read_csv(df_dir,sep=',')
-        total_df = pd.read_csv(os.path.join(self.root,'ml-1m.train.rating'))
-        users, items, labels = [], [], []
-        user_item_set = set(zip(df['userId'], df['movieId']))
-        total_user_item_set = set(zip(total_df['userId'],total_df['movieId']))
-        all_movieIds = total_df['movieId'].unique()
+        if self.filesize== 'small':
+            total_df = self.total_df
+            df = self.df
+            users, items, labels = [], [], []
+            user_item_set = set(zip(df['userId'], df['movieId']))
+            total_user_item_set = set(zip(total_df['userId'],total_df['movieId']))
+            all_movieIds = total_df['movieId'].unique()
+
+        else:
+            dataframe_file = f"ml-1m.{'train' if self.train else 'test'}.rating"
+            df_dir = os.path.join(self.root,dataframe_file)
+            df = pd.read_csv(df_dir,sep=',')
+            total_df = pd.read_csv(os.path.join(self.root,'ml-1m.train.rating'))
+            users, items, labels = [], [], []
+            user_item_set = set(zip(df['userId'], df['movieId']))
+            total_user_item_set = set(zip(total_df['userId'],total_df['movieId']))
+            all_movieIds = total_df['movieId'].unique()
+
         # negative feedback dataset ratio
         negative_ratio = self.ng_ratio
         for u, i in user_item_set:
@@ -132,7 +224,7 @@ class MovieLens(Dataset):
                 # first item random choice
                 negative_item = np.random.choice(all_movieIds)
                 # check if item and user has interaction, if true then set new value from random
-                while ((u, negative_item) in user_item_set) :
+                while ((u, negative_item) in total_user_item_set) :
                     negative_item = np.random.choice(all_movieIds)
                 users.append(u)
                 items.append(negative_item)
