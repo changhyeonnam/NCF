@@ -36,9 +36,8 @@ class Train():
                 user,item,target=user.to(device),item.to(device),target.float().to(device)
                 optimizer.zero_grad()
                 #print(f'user:{user.shape}, item:{item.shape}')
+
                 pred = model(user, item)
-               # print(f'target:{target.shape}')
-               # print(f'pred:{pred.shape}')
                 cost = criterion(pred,target)
                 cost.backward()
                 optimizer.step()

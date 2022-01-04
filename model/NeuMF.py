@@ -30,6 +30,7 @@ class NeuMF(nn.Module):
 
         nn.init.kaiming_uniform_(self.predict_layer.weight,
                                  a=1, nonlinearity='sigmoid')
+        # self.predict_layer.bias.data.zero_()
 
     def forward(self,user,item):
         # print(self.GMF(user,item).shape)

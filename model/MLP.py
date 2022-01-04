@@ -41,10 +41,9 @@ class MLP(nn.Module):
             for layer in self.MLP_model:
                 if isinstance(layer,nn.Linear):
                     nn.init.xavier_uniform_(layer.weight)
-                    layer.bias.data.zero_()
-            # for m in self.modules():
-            #     if isinstance(m, nn.Linear) and m.bias is not None:
-            #         m.bias.data.zero_()
+                    # layer.bias.data.zero_() //이게 문제?
+
+
 
     def forward(self,user,item):
         embed_user = self.user_embedding(user)
