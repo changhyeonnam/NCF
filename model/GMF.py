@@ -16,7 +16,7 @@ class GMF(nn.Module):
         self.user_embedding = nn.Embedding(num_users,num_factor)
         self.item_embedding = nn.Embedding(num_items,num_factor)
         self.predict_layer = nn.Sequential(nn.Linear(num_factor,1),nn.Sigmoid())
-        self._init_weight()
+        # self._init_weight()
 
     def _init_weight(self):
         if not self.use_pretrain:
