@@ -38,7 +38,7 @@ class NeuMF(nn.Module):
         before_last_layer_output = torch.cat((self.GMF(user,item),self.MLP(user,item)),dim=-1)
         # print(f'NeuMF before_last_layer_output:{before_last_layer_output.shape}')
 
-        output = self.last_layer(before_last_layer_output)
+        output = self.predict_layer(before_last_layer_output)
         # print(f'NeuMF output shape:{output.view(-1).shape}, not view:{output.shape}')
 
         return output.view(-1)
