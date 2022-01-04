@@ -31,7 +31,7 @@ class Train():
         test = self.test
 
         for epochs in range(0,total_epochs):
-            avg_cost = 0
+            #avg_cost = 0
             for user,item,target in dataloader:
                 user,item,target=user.to(device),item.to(device),target.float().to(device)
                 optimizer.zero_grad()
@@ -41,13 +41,13 @@ class Train():
                 cost = criterion(pred,target)
                 cost.backward()
                 optimizer.step()
-                avg_cost += cost.item() / total_batch
+                #avg_cost += cost.item() / total_batch
             if self.print_cost:
-                print(f'Epoch: {(epochs + 1):04}, {criterion._get_name()}= {avg_cost:.9f}')
+                #print(f'Epoch: {(epochs + 1):04}, {criterion._get_name()}= {avg_cost:.9f}')
                 HR, NDCG = metrics(model,test,10,device)
                 print("HR: {:.3f}\tNDCG: {:.3f}".format(np.mean(HR), np.mean(NDCG)))
 
-            loss.append(avg_cost)
+            #loss.append(avg_cost)
 
         if self.print_cost:
             print('Learning finished')

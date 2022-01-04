@@ -8,9 +8,9 @@ from zipfile import ZipFile
 import requests
 from sklearn.model_selection  import train_test_split
 import random
-
-
-
+from io import BytesIO
+from zipfile import ZipFile
+import sklearn
 
 class Download_read_csv():
     def __init__(self, root, filename, filetype, download):
@@ -114,7 +114,7 @@ class MovieLens(Dataset):
         '''
         :return:  df["userId"].nunique(),  df["movieId"].nunique()
         '''
-        df = pd.read_csv(os.path.join(self.root, 'ml-1m.total.rating'))
+        df = self.total_df
         return df["userId"].max(), df["movieId"].max()
 
     # def _load_data(self):
@@ -231,7 +231,7 @@ class MovieLens(Dataset):
                 items.append(negative_item)
                 visited.append(negative_item)
                 labels.append(0.0)
-
+        print(len(labels),len(users),len(items))
         return torch.tensor(users), torch.tensor(items), torch.tensor(labels)
 
 
