@@ -132,11 +132,11 @@ class MovieLens(Dataset):
                 # first item random choice
                 negative_item = np.random.choice(all_movieIds)
                 # check if item and user has interaction, if true then set new value from random
-                while ((u, negative_item) in user_item_set) :
+                while (u, negative_item) in total_user_item_set or negative_item in visited :
                     negative_item = np.random.choice(all_movieIds)
                 users.append(u)
                 items.append(negative_item)
-                # visited.append(negative_item)
+                visited.append(negative_item)
                 labels.append(0.0)
 
         return torch.tensor(users), torch.tensor(items), torch.tensor(labels)
