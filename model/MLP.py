@@ -27,6 +27,7 @@ class MLP(nn.Module):
             #     MLP_layers.append(nn.Linear(factor, 1))
             #     MLP_layers.append(nn.Sigmoid())
             # else:
+            # MLP_layers.append(nn.Dropout(p=self.dropout))
             MLP_layers.append(nn.Linear(factor, factor // 2))
             MLP_layers.append(nn.ReLU())
         # unpacking layers in to torch.nn.Sequential
