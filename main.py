@@ -109,7 +109,7 @@ elif args.model=='NeuMF':
                   num_factor=args.factor,
                   use_pretrain=use_pretrain,
                   layer=args.layer)
-    if use_pretrain :
+    if not use_pretrain :
         optimizer =  optim.Adam(model.parameters(), lr=args.lr)
     else:
         optimizer = optim.SGD(model.parameters(),lr=args.lr)
