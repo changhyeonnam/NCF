@@ -21,8 +21,8 @@ class NeuMF(nn.Module):
             # not implemented
             pass
         else:
-            self.GMF=GMF(num_users,num_items,num_factor,use_pretrain=use_pretrain)
-            self.MLP=MLP(num_users,num_items,num_factor,layer,use_pretrain=use_pretrain)
+            self.GMF=GMF(num_users,num_items,num_factor,use_pretrain=use_pretrain,notuseNeuMF=False)
+            self.MLP=MLP(num_users,num_items,num_factor,layer,use_pretrain=use_pretrain,notuseNeuMF=False)
         self.predict_layer=nn.Sequential(nn.Linear(num_factor*2,1),nn.Sigmoid())
 
         #self._init_weight()
@@ -34,9 +34,9 @@ class NeuMF(nn.Module):
         # self.predict_layer.bias.data.zero_()
 
     def forward(self,user,item):
-        # print(self.GMF(user,item).shape)
-        # print(self.MLP(user,item).shape)
-        # print(f'NeMF <- GMF {self.GMF(user,item).shape}, MLP{self.MLP(user,item).shape}')
+       # print(self.GMF(user,item).shape)
+       # print(self.MLP(user,item).shape)
+       # print(f'NeMF <- GMF {self.GMF(user,item).shape}, MLP{self.MLP(user,item).shape}')
         before_last_layer_output = torch.cat((self.GMF(user,item),self.MLP(user,item)),dim=-1)
         # print(f'NeuMF before_last_layer_output:{before_last_layer_output.shape}')
 

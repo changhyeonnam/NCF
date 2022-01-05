@@ -29,12 +29,11 @@ parser.add_argument('-tb','--test_batch',type=int,default=100,help="test Batch s
 parser.add_argument('-l','--layer',type=None,default=[64,32,16],help='MLP layer factor list')
 parser.add_argument('-f','--factor',type=int,default=8,help='choose number of predictive factor')
 parser.add_argument('-m','--model',type=str,default='NeuMF',help='select among the following model,[MLP, GMF, NeuMF]')
-parser.add_argument('-s','--size',type=str,default='small',help='Size of File')
 parser.add_argument('-lr','--lr',type=float,default=1e-3,help='learning rate')
 parser.add_argument('-dl','--download',type=str,default='False',help='Download or not')
 parser.add_argument('-p','--use_pretrain',type=str,default='False',help='use pretrained model or not')
 parser.add_argument('-k','--topk',type=int,default=10,help='choose top@k for NDCG@k, HR@k')
-parser.add_argument('-fi','--filesize',type=str,default='large',help='choose file size')
+parser.add_argument('-fi','--filesize',type=str,default='small',help='choose file size')
 args = parser.parse_args()
 
 # print selected model
@@ -52,11 +51,13 @@ else:
 
 # root path for dataset
 
-# root_path='data'
-root_path = "dataset"
-file_name = "ml-latest-small"
-#file_name = "ml-latest"
-file_type = ".zip"
+if args.filesize == 'large':
+    root_path='data'
+else:
+    root_path = "dataset"
+    file_name = "ml-latest-small"
+    #file_name = "ml-latest"
+    file_type = ".zip"
 
 if args.filesize == 'small':
     data = Download_read_csv(root=root_path, filename=file_name, filetype=file_type, download=True)
@@ -93,14 +94,16 @@ if args.model=='MLP':
                 num_items=args.batch*max_num_items,
                 num_factor=args.factor,
                 layer=args.layer,
-                use_pretrain=args.use_pretrain)
+                use_pretrain=args.use_pretrain,
+                notuseNeuMF=True)
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
 elif args.model=='GMF':
     model = GMF(num_users=args.batch*max_num_users,
                 num_items=args.batch*max_num_items,
                 num_factor=args.factor,
-                use_pretrain=args.use_pretrain)
+                use_pretrain=args.use_pretrain,
+                notuseNeuMF=True)
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
 elif args.model=='NeuMF':
@@ -150,14 +153,14 @@ if __name__=='__main__' :
 
 
 
-
-
-
-
-
-
-
-
-
-
-    print("I'm nam")
+import pandas as pd
+import torch
+import argparse
+# import inspect
+from torch.utils.data import DataLoader
+import torch.optim as optim
+import matplotlib.pyplot as plt
+from utils import MovieLens,Download_read_csv
+from model.MLP import MLP
+from model.GMF import GMF
+from model.NeuMF import NeuMF

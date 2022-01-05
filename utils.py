@@ -114,7 +114,10 @@ class MovieLens(Dataset):
         '''
         :return:  df["userId"].nunique(),  df["movieId"].nunique()
         '''
-        df = self.total_df
+        if self.filesize == 'small':
+            df = self.total_df
+        else:
+            df = pd.read_csv(os.path.join(self.root,'ml-1m.total.rating'))
         return df["userId"].max(), df["movieId"].max()
 
     # def _load_data(self):
@@ -202,7 +205,7 @@ class MovieLens(Dataset):
             dataframe_file = f"ml-1m.{'train' if self.train else 'test'}.rating"
             df_dir = os.path.join(self.root,dataframe_file)
             df = pd.read_csv(df_dir,sep=',')
-            total_df = pd.read_csv(os.path.join(self.root,'ml-1m.train.rating'))
+            total_df = pd.read_csv(os.path.join(self.root,'ml-1m.total.rating'))
             users, items, labels = [], [], []
             user_item_set = set(zip(df['userId'], df['movieId']))
             total_user_item_set = set(zip(total_df['userId'],total_df['movieId']))
