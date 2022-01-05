@@ -13,8 +13,8 @@ from train import Train
 from evaluation import metrics
 import os
 import numpy as np
-
-
+import time
+from torchsummary import summary
 device = torch.device('cuda'if torch.cuda.is_available() else 'cpu')
 print(f'device: {device}')
 if device == 'cuda':
@@ -123,6 +123,8 @@ elif args.model=='NeuMF':
 
 model.to(device)
 
+
+summary(model,[(1,1),(1,1)])
 # objective function is log loss (Cross-entropy loss)
 criterion = torch.nn.BCELoss()
 
@@ -138,6 +140,10 @@ if __name__=='__main__' :
                   dataloader=dataloader_train,
                   device=device,
                   print_cost=True,)
+    
+    # measuring time
+    start = time.time()
+
     train.train()
     pretrained_model_path ='pretrain'
     # if not use_pretrain:
@@ -147,20 +153,10 @@ if __name__=='__main__' :
     #     if args.model=='MLP' or 'GMF' :
     #         torch.save(model.state_dict(),model_save_path)
 
-
+    end = time.time()
+    print(f'training time:{end-start:.5f}')
     HR,NDCG = metrics(model,test_loader=dataloader_test,top_k=args.topk,device=device)
     print("HR: {:.3f}\tNDCG: {:.3f}".format(np.mean(HR), np.mean(NDCG)))
 
 
 
-import pandas as pd
-import torch
-import argparse
-# import inspect
-from torch.utils.data import DataLoader
-import torch.optim as optim
-import matplotlib.pyplot as plt
-from utils import MovieLens,Download_read_csv
-from model.MLP import MLP
-from model.GMF import GMF
-from model.NeuMF import NeuMF

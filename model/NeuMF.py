@@ -34,6 +34,8 @@ class NeuMF(nn.Module):
         # self.predict_layer.bias.data.zero_()
 
     def forward(self,user,item):
+       # print(user.shape)
+       # print(item.shape)
        # print(self.GMF(user,item).shape)
        # print(self.MLP(user,item).shape)
        # print(f'NeMF <- GMF {self.GMF(user,item).shape}, MLP{self.MLP(user,item).shape}')
