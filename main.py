@@ -88,7 +88,7 @@ if args.model=='MLP':
                 num_items=args.batch*max_num_items,
                 num_factor=args.factor,
                 layer=args.layer,
-                use_pretrain=use_pretrain,
+                use_pretrain=False,
                 use_NeuMF=False)
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
@@ -96,7 +96,7 @@ elif args.model=='GMF':
     model = GMF(num_users=args.batch*max_num_users,
                 num_items=args.batch*max_num_items,
                 num_factor=args.factor,
-                use_pretrain=use_pretrain,
+                use_pretrain=False,
                 use_NeuMF=False)
 
     optimizer = optim.Adam(model.parameters(), lr=args.lr)

@@ -31,6 +31,7 @@ class MLP(nn.Module):
             # ex) (64,32) -> (32,16) -> (16,8)
             MLP_layers.append(nn.Linear(factor, factor // 2))
             MLP_layers.append(nn.ReLU())
+
         # unpacking layers in to torch.nn.Sequential
         self.MLP_model = nn.Sequential(*MLP_layers)
 
@@ -65,6 +66,7 @@ class MLP(nn.Module):
         embed_input = torch.cat((embed_user,embed_item),dim=-1)
         output = self.MLP_model(embed_input)
         if not self.use_NeuMF:
+            output = self.predict_layer(output)
             output = output.view(-1)
         return output
 
