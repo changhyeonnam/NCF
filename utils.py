@@ -168,7 +168,7 @@ class MovieLens(Dataset):
                 items.append(negative_item)
                 visited.append(negative_item)
                 labels.append(0.0)
-        print(len(labels),len(users),len(items))
+        print(f"negative sampled data: {len(labels)}")
         return torch.tensor(users), torch.tensor(items), torch.tensor(labels)
 
 
