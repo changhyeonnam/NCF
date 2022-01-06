@@ -98,7 +98,7 @@ Recommendation System에서는 모델의 정확도보다 user에게 얼마나 �
 - GPU: NVIDIA RTX A6000 8대
 
 
-reference : [Neural Collaborative Filtering](https://www.google.com/search?q=Neural+Collaborative+Filtering&oq=Neural+Collaborative+Filtering&aqs=chrome.0.69i59l3j69i60l3.650j0j9&sourceid=chrome&ie=UTF-8)
+reference : [Neural Collaborative Filtering](https://arxiv.org/abs/1708.05031)
 
 review written in korean : [Review](https://changhyeonnam.github.io/2021/12/28/Neural_Collaborative_Filtering.html)
 
