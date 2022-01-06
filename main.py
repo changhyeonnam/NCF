@@ -153,7 +153,7 @@ if __name__=='__main__' :
     train.train()
 
     if save_model:
-        pretrain_model_dir = os.path.join(pretrain_dir,args.model+'pth')
+        pretrain_model_dir = os.path.join(pretrain_dir,args.model+'.pth')
         torch.save(model,pretrain_model_dir)
 
 
