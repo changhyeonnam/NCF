@@ -20,7 +20,7 @@ class MLP(nn.Module):
         self.pretrained_model = pretrained_MLP
         self.num_users = num_users
         self.num_items = num_items
-        self.use_pretrian = use_pretrain
+        self.use_pretrain = use_pretrain
         self.user_embedding = nn.Embedding(num_users,layer[0]//2)
         self.item_embedding = nn.Embedding(num_items,layer[0]//2)
         self.use_NeuMF = use_NeuMF
@@ -38,13 +38,13 @@ class MLP(nn.Module):
         if not use_NeuMF:
             self.predict_layer =nn.Linear(num_factor, 1)
             self.Sigmoid  = nn.Sigmoid()
-        if use_pretrain:
+        if self.use_pretrain:
             self._load_pretrained_model()
         else:
             self._init_weight()
 
     def _init_weight(self):
-        if not self.use_pretrian:
+        if not self.use_pretrain:
             nn.init.normal_(self.user_embedding.weight,std=1e-2)
             nn.init.normal_(self.item_embedding.weight,std=1e-2)
             for layer in self.MLP_model:
@@ -70,8 +70,9 @@ class MLP(nn.Module):
         output = self.MLP_model(embed_input)
         if not self.use_NeuMF:
             output = self.predict_layer(output)
-            output = self.Sigmoid(output)
-            output = output.view(-1)
+            if not self.use_pretrain:
+                output = self.Sigmoid(output)
+                output = output.view(-1)
         return output
 
     def __call__(self,*args):
