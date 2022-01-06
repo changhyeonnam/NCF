@@ -48,7 +48,7 @@ class NeuMF(nn.Module):
         self.predict_layer.bias.data.copy_(0.5 * predict_bias)
 
     def forward(self,user,item):
-        before_last_layer_output = torch.cat((self.pretrained_GMF(user,item),self.pretrained_MLP(user,item)),dim=-1)
+        before_last_layer_output = torch.cat((self.GMF(user,item),self.MLP(user,item)),dim=-1)
         print(f"concat len:{before_last_layer_output}")
         output = self.predict_layer(before_last_layer_output)
         output = self.Sigmoid(output)
