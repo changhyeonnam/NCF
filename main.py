@@ -108,10 +108,10 @@ elif args.model=='NeuMF':
         pretrained_GMF = torch.load(GMF_dir)
         pretrained_MLP = torch.load(MLP_dir)
 
-        for param in pretrained_GMF:
+        for param in pretrained_GMF.parameters():
             param.requires_grad = False
 
-        for param in pretrained_MLP:
+        for param in pretrained_MLP.parameters():
             param.requires_grad = False
     else:
         pretrained_GMF = None
