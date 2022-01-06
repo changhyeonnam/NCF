@@ -1,5 +1,5 @@
 ### NCFML (Neural Collaborative Filtering with MovieLens in torch)
-## 데이터셋 정의
+### Dataset
 
 Matrix Factorization에서 사용한 MovieLens dataset을 동일하게 사용한다. rating 점수와 같은 explicit feedback을 user-item interaction 만을 의미하는 implicit feedback로 만들기 위해 rating column을 모두 1로 전처리하였다. 0은 rating을 하지 않은 것에 불과하지만, 본 논문에서는 0을 negative feedback으로 가정한다. 따라서 user-item의 interaction이 없는 0을 의미하는 negative feedback sample들을 만들기 위해 전치리를 진행하였다. (negative feedback에 대한 sampling의 비율은 논문에서 명시한 값을 사용)
 
