@@ -1,9 +1,9 @@
 ### NCFML (Neural Collaborative Filtering with MovieLens in torch)
-## 데이터셋 정의
+### Dataset
 
 Matrix Factorization에서 사용한 MovieLens dataset을 동일하게 사용한다. rating 점수와 같은 explicit feedback을 user-item interaction 만을 의미하는 implicit feedback로 만들기 위해 rating column을 모두 1로 전처리하였다. 0은 rating을 하지 않은 것에 불과하지만, 본 논문에서는 0을 negative feedback으로 가정한다. 따라서 user-item의 interaction이 없는 0을 의미하는 negative feedback sample들을 만들기 위해 전치리를 진행하였다. (negative feedback에 대한 sampling의 비율은 논문에서 명시한 값을 사용)
 
-## 모델 설명
+### model
 
 - 기존의 딥러닝을 추천시스템에 적용한 연구들은 model에 추가적인 feature를 전달하기 위한 방법으로만 사용하고, latent factor에 대해서는 Matrix Factorization에 의존한다.
 
@@ -63,7 +63,7 @@ Matrix Factorization에서 사용한 MovieLens dataset을 동일하게 사용한
 python main.py --epoch 30 --batch 256 --factor 8 --model NeuMF -pr False --topk 10 --file_size 100k --layer 64 32 16 --download True --use_pretrain False
 ```
 
-### 평가지표
+### Metric
 
 Recommendation System에서는 모델의 정확도보다 user에게 얼마나 다양하고, 새롭고, 참신한 item을 선택해주는지가 model의 성능을 평가하는 기준이 된다.
 
@@ -91,14 +91,14 @@ Recommendation System에서는 모델의 정확도보다 user에게 얼마나 �
 | MLP | 0.602 | 0.343 | 1h 25m |
 | NeuMF (without pre-training) | 0.668 | 0.393 | 2h |
 
-# 개발환경 및 train 환경
+# development enviroment
 
 - OS: Max OS X
 - IDE: pycharm, gpu sever computer에서는 vim을 사용
 - GPU: NVIDIA RTX A6000 8대
 
 
-reference : [Neural Collaborative Filtering](https://www.google.com/search?q=Neural+Collaborative+Filtering&oq=Neural+Collaborative+Filtering&aqs=chrome.0.69i59l3j69i60l3.650j0j9&sourceid=chrome&ie=UTF-8)
+reference : [Neural Collaborative Filtering](https://arxiv.org/abs/1708.05031)
 
 review written in korean : [Review](https://changhyeonnam.github.io/2021/12/28/Neural_Collaborative_Filtering.html)
 
