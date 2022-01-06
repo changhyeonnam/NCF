@@ -33,6 +33,7 @@ parser.add_argument('-m','--model',type=str,default='NeuMF',help='select among t
 parser.add_argument('-lr', '--lr', default=1e-3, type=float,help='learning rate for optimizer')
 parser.add_argument('-dl','--download',type=str,default='True',help='Download or not')
 parser.add_argument('-pr','--use_pretrain',type=str,default='False',help='use pretrained model or not')
+parser.add_argument('-save','--save_model',type=str,default='False',help='save trained model or not')
 parser.add_argument('-k','--topk',type=int,default=10,help='choose top@k for NDCG@k, HR@k')
 parser.add_argument('-fi','--file_size',type=str,default='100k',help='choose file size, [100k,1m,10m,20m]')
 args = parser.parse_args()
@@ -43,6 +44,11 @@ print(f'model name: {args.model}')
 # argparse doesn't supprot boolean type
 use_downlaod = True if args.download=='True' else False
 use_pretrain = True if args.use_pretrain=='True' else False
+save_model = True if args.save_model == 'True' else False
+
+pretrain_dir = 'pretrain'
+if not os.path.isdir(pretrain_dir):
+    os.makedirs(pretrain_dir)
 
 # root path for dataset
 root_path='dataset'+args.file_size
@@ -96,11 +102,28 @@ elif args.model=='GMF':
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
 elif args.model=='NeuMF':
+    if use_pretrain:
+        GMF_dir = os.path.join(pretrain_dir,'GMF.pth')
+        MLP_dir = os.path.join(pretrain_dir,'MLP.pth')
+        pretrained_GMF = torch.load(GMF_dir)
+        pretrained_MLP = torch.load(MLP_dir)
+
+        for param in pretrained_GMF:
+            param.requires_grad = False
+
+        for param in pretrained_MLP:
+            param.requires_grad = False
+    else:
+        pretrained_GMF = None
+        pretrained_MLP = None
+
     model = NeuMF(num_users=args.batch*max_num_users,
                   num_items=args.batch*max_num_items,
                   num_factor=args.factor,
                   use_pretrain=use_pretrain,
-                  layer=args.layer)
+                  layer=args.layer,
+                  pretrained_GMF=pretrained_GMF,
+                  pretrained_MLP=pretrained_MLP)
     if not use_pretrain :
         optimizer =  optim.Adam(model.parameters(), lr=args.lr)
     else:
@@ -112,8 +135,6 @@ elif args.model=='NeuMF':
 #    model = torch.nn.DataParallel(model)
 
 model.to(device)
-
-
 # objective function is log loss (Cross-entropy loss)
 criterion = torch.nn.BCELoss()
 
@@ -129,9 +150,12 @@ if __name__=='__main__' :
     
     # measuring time
     start = time.time()
-
     train.train()
-    pretrained_model_path ='pretrain'
+
+    if save_model:
+        pretrain_model_dir = os.path.join(pretrain_dir,args.model+'pth')
+
+
     end = time.time()
     print(f'training time:{end-start:.5f}')
     HR,NDCG = metrics(model,test_loader=dataloader_test,top_k=args.topk,device=device)
