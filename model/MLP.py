@@ -9,11 +9,7 @@ class MLP(nn.Module):
                  num_factor:int=8,
                  layer=None,
                  use_pretrain: bool = False,
-<<<<<<< HEAD
                  use_NeuMF:bool = False
-=======
-                 notuseNeuMF:bool = False
->>>>>>> 400fe117ba803f42cd8620893e3ee4638b74da36
                  ):
         super(MLP,self).__init__()
 
@@ -25,20 +21,12 @@ class MLP(nn.Module):
         self.user_embedding = nn.Embedding(num_users,layer[0]//2)
         self.item_embedding = nn.Embedding(num_items,layer[0]//2)
         MLP_layers=[]
-<<<<<<< HEAD
         self.use_NeuMF = use_NeuMF
         for idx,factor in enumerate(layer):
             # ith MLP layer (layer[i],layer[i]//2) -> #(i+1)th MLP layer (layer[i+1],layer[i+1]//2)
             # ex) use only MLP (64,32) -> (32,16) -> (16,8)
             # ex) use MLP with NeuMF (64,32) -> (32,16) -> (16,1)
             if not self.use_NeuMF and  idx ==(len(layer)-1):
-=======
-        self.notuseNeuMF = notuseNeuMF
-        for idx,factor in enumerate(layer):
-            # ith MLP layer (layer[i],layer[i]//2) -> #(i+1)th MLP layer (layer[i+1],layer[i+1]//2)
-            # ex) (32,16) -> (16,8) -> (8,4)
-            if self.notuseNeuMF and  idx ==(len(layer)-1):
->>>>>>> 400fe117ba803f42cd8620893e3ee4638b74da36
                  MLP_layers.append(nn.Linear(factor, 1))
                  MLP_layers.append(nn.Sigmoid())
             else:
@@ -63,14 +51,8 @@ class MLP(nn.Module):
         embed_item = self.item_embedding(item)
         embed_input = torch.cat((embed_user,embed_item),dim=-1)
         output = self.MLP_model(embed_input)
-<<<<<<< HEAD
         if not self.use_NeuMF:
             output = output.view(-1)
-=======
-        if self.notuseNeuMF:
-            output = output.view(-1)
-       # print(f'MLP output shape:{output.view(-1).shape}, not view:{output.shape}')
->>>>>>> 400fe117ba803f42cd8620893e3ee4638b74da36
         return output
 
     def __call__(self,*args):
