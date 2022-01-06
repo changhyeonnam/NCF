@@ -12,7 +12,8 @@ from train import Train
 from evaluation import metrics
 import os
 import numpy as np
-
+import time
+from torchsummary import summary
 
 # print device info
 device = torch.device('cuda' if torch.cuda.is_available()  else 'cpu')
@@ -92,6 +93,7 @@ elif args.model=='GMF':
                 num_factor=args.factor,
                 use_pretrain=use_pretrain,
                 use_NeuMF=False)
+
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
 elif args.model=='NeuMF':
@@ -112,6 +114,7 @@ elif args.model=='NeuMF':
 
 model.to(device)
 
+
 # objective function is log loss (Cross-entropy loss)
 criterion = torch.nn.BCELoss()
 
@@ -124,9 +127,14 @@ if __name__=='__main__' :
                   dataloader=dataloader_train,
                   device=device,
                   print_cost=True,)
+    
+    # measuring time
+    start = time.time()
+
     train.train()
     pretrained_model_path ='pretrain'
-
+    end = time.time()
+    print(f'training time:{end-start:.5f}')
     HR,NDCG = metrics(model,test_loader=dataloader_test,top_k=args.topk,device=device)
     print("HR: {:.3f}\tNDCG: {:.3f}".format(np.mean(HR), np.mean(NDCG)))
 

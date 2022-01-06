@@ -33,8 +33,6 @@ class Download():
             self._download_movielens()
         self.df = self._read_ratings_csv()
 
-
-
     def _download_movielens(self) -> None:
         '''
         Download dataset from url, if there is no root dir, then mkdir root dir.
@@ -117,6 +115,7 @@ class MovieLens(Dataset):
         self.users, self.items, self.labels = self._negative_sampling()
 
 
+
     def __len__(self) -> int:
         '''
         get lenght of data
@@ -146,7 +145,6 @@ class MovieLens(Dataset):
         user_item_set = set(zip(df['userId'], df['movieId']))
         total_user_item_set = set(zip(total_df['userId'],total_df['movieId']))
         all_movieIds = total_df['movieId'].unique()
-
         # negative feedback dataset ratio
         negative_ratio = self.ng_ratio
         for u, i in user_item_set:
@@ -170,7 +168,7 @@ class MovieLens(Dataset):
                 items.append(negative_item)
                 visited.append(negative_item)
                 labels.append(0.0)
-
+        print(len(labels),len(users),len(items))
         return torch.tensor(users), torch.tensor(items), torch.tensor(labels)
 
 
