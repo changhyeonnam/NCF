@@ -36,7 +36,8 @@ class MLP(nn.Module):
         self.MLP_model = nn.Sequential(*MLP_layers)
 
         if not use_NeuMF:
-            self.predict_layer = nn.Sequential(nn.Linear(num_factor, 1), nn.Sigmoid())
+            self.predict_layer =nn.Linear(num_factor, 1)
+            self.Sigmoid  = nn.Sigmoid()
         if use_pretrain:
             self._load_pretrained_model()
         else:
@@ -49,6 +50,8 @@ class MLP(nn.Module):
             for layer in self.MLP_model:
                 if isinstance(layer,nn.Linear):
                     nn.init.xavier_uniform_(layer.weight)
+        if not self.use_NeuMF:
+            nn.init.normal_(self.predict_layer.weight,std=1e-2)
 
     def _load_pretrained_model(self):
         self.user_embedding.weight.data.copy_(
@@ -67,6 +70,7 @@ class MLP(nn.Module):
         output = self.MLP_model(embed_input)
         if not self.use_NeuMF:
             output = self.predict_layer(output)
+            output = self.Sigmoid(output)
             output = output.view(-1)
         return output
 

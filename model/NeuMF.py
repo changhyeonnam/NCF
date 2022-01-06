@@ -23,13 +23,17 @@ class NeuMF(nn.Module):
         if layer is None:
             layer = [64,32, 16]
 
-        if use_pretrain:
+        if self.use_pretrain:
             self._load_pretrain_model()
         else:
             self.GMF=GMF(num_users,num_items,num_factor,use_pretrain=use_pretrain,use_NeuMF=True)
             self.MLP=MLP(num_users,num_items,num_factor,layer,use_pretrain=use_pretrain,use_NeuMF=True)
 
-        self.predict_layer=nn.Sequential(nn.Linear(num_factor*2,1),nn.Sigmoid())
+        self.predict_layer= nn.Linear(num_factor*2,1)
+        self.Sigmoid = nn.Sigmoid()
+
+        if not self.use_pretrain:
+            nn.init.normal_(self.predict_layer.weight,std=1e-2)
 
     def _load_pretrain_model(self):
         predict_weight = torch.cat([
@@ -43,4 +47,5 @@ class NeuMF(nn.Module):
     def forward(self,user,item):
         before_last_layer_output = torch.cat((self.GMF(user,item),self.MLP(user,item)),dim=-1)
         output = self.predict_layer(before_last_layer_output)
+        output = self.Sigmoid(output)
         return output.view(-1)
