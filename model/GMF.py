@@ -46,12 +46,13 @@ class GMF(nn.Module):
 
     def forward(self,users,items):
         embedding_elementwise = self.user_embedding(users) * self.item_embedding(items)
+        output = embedding_elementwise
         if not self.use_NeuMF:
             output = self.predict_layer(embedding_elementwise)
-            if not self.use_pretrain:
-                output = self.Sigmoid(output)
-                output = output.view(-1)
+            output = self.Sigmoid(output)
+            output = output.view(-1)
         else:
-            output = embedding_elementwise
+            output = self.predict_layer(output)
+
         return output
 

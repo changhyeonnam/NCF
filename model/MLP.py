@@ -17,7 +17,7 @@ class MLP(nn.Module):
         if layer is None:
             layer = [64,32,16]
 
-        self.pretrained_model = pretrained_MLP
+        self.pretrained_MLP = pretrained_MLP
         self.num_users = num_users
         self.num_items = num_items
         self.use_pretrain = use_pretrain
@@ -58,7 +58,7 @@ class MLP(nn.Module):
             self.pretrained_MLP.user_embedding.weight)
         self.item_embedding.weight.data.copy_(
             self.pretrained_MLP.item_embedding.weight)
-        for (layer, pretrained_layer) in zip(self.MLP_model,self.pretrained_model):
+        for (layer, pretrained_layer) in zip(self.MLP_model,self.pretrained_MLP):
             if isinstance(layer,nn.Linear) and isinstance(pretrained_layer,nn.Linear):
                 layer.weight.data.copy_(pretrained_layer.weight)
                 layer.bias.data.copy_(pretrained_layer.bias)
@@ -70,9 +70,11 @@ class MLP(nn.Module):
         output = self.MLP_model(embed_input)
         if not self.use_NeuMF:
             output = self.predict_layer(output)
-            if not self.use_pretrain:
-                output = self.Sigmoid(output)
-                output = output.view(-1)
+            output = self.Sigmoid(output)
+            output = output.view(-1)
+        else:
+            output = self.predict_layer(output)
+
         return output
 
     def __call__(self,*args):
