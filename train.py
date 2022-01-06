@@ -35,8 +35,6 @@ class Train():
             for user,item,target in dataloader:
                 user,item,target=user.to(device),item.to(device),target.float().to(device)
                 optimizer.zero_grad()
-                #print(f'user:{user.shape}, item:{item.shape}')
-
                 pred = model(user, item)
                 cost = criterion(pred,target)
                 cost.backward()
