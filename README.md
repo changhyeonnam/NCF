@@ -51,10 +51,16 @@ Matrix Factorization에서 사용한 MovieLens dataset을 동일하게 사용한
 └── utils.py
 ```
 
+### development enviroment
+
+- OS: Max OS X
+- IDE: pycharm, gpu sever computer에서는 vim을 사용
+- GPU: NVIDIA RTX A6000 8
+
 ### Quick start
 
 ```python
-python main.py -e 30 -b 32 -l [32,16,8] -f 8 -model NeuMF -pretrain False -k 10
+python main.py --epoch 30 --batch 256 --factor 8 --model NeuMF -pr False --topk 10 --file_size 100k --layer 64 32 16 --download True --use_pretrain False
 ```
 
 ### 평가지표
