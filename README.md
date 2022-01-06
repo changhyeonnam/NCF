@@ -50,7 +50,7 @@ python main.py -e 30 -b 32 -l [32,16,8] -f 8 -model NeuMF -pretrain False -k 10
 Recommendation System에서는 모델의 정확도보다 user에게 얼마나 다양하고, 새롭고, 참신한 item을 선택해주는지가 model의 성능을 평가하는 기준이 된다.
 
 - HR@K : Dataset상에 각 user마다 선호하는 item 중 1개를 제외하고 학습시킨 뒤, user별로 K개의 item을 추천해주고, 전처리과정에서 제외한 item이 추천해준 item K개 안에 포함되면 Hit으로 판단한다.
-
+```math
     $$
     Hit\space Ratio = {of\space Hit\space User \over  of\space User}
     $$
@@ -71,6 +71,8 @@ $$
 $$
 NDCG_K = {DCG \over IDCG}
 $$
+
+```
 
 ## Neural Collaborative Filtering Result
 
