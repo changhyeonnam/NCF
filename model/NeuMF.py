@@ -26,9 +26,9 @@ class NeuMF(nn.Module):
         self.predict_layer = nn.Linear(num_factor*2,1)
         self.Sigmoid = nn.Sigmoid()
 
-        self.GMF = GMF(num_users, num_items, num_factor, use_pretrain=use_pretrain, use_NeuMF=True,
+        self.GMF = GMF(num_users, num_items, num_factor, use_pretrain=use_pretrain, use_NeuMF=False,
                        pretrained_GMF=self.pretrained_GMF)
-        self.MLP = MLP(num_users, num_items, num_factor, layer, use_pretrain=use_pretrain, use_NeuMF=True,
+        self.MLP = MLP(num_users, num_items, num_factor, layer, use_pretrain=use_pretrain, use_NeuMF=False,
                        pretrained_MLP=self.pretrained_MLP)
 
         if self.use_pretrain:
@@ -49,7 +49,6 @@ class NeuMF(nn.Module):
 
     def forward(self,user,item):
         before_last_layer_output = torch.cat((self.GMF(user,item),self.MLP(user,item)),dim=-1)
-        print(f"concat len:{before_last_layer_output}")
         output = self.predict_layer(before_last_layer_output)
         output = self.Sigmoid(output)
         return output.view(-1)
