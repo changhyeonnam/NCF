@@ -26,9 +26,9 @@ class NeuMF(nn.Module):
         self.predict_layer = nn.Linear(num_factor*2,1)
         self.Sigmoid = nn.Sigmoid()
 
-        self.GMF = GMF(num_users, num_items, num_factor, use_pretrain=use_pretrain, use_NeuMF=False,
+        self.GMF = GMF(num_users, num_items, num_factor, use_pretrain=use_pretrain, use_NeuMF=True,
                        pretrained_GMF=self.pretrained_GMF)
-        self.MLP = MLP(num_users, num_items, num_factor, layer, use_pretrain=use_pretrain, use_NeuMF=False,
+        self.MLP = MLP(num_users, num_items, num_factor, layer, use_pretrain=use_pretrain, use_NeuMF=True,
                        pretrained_MLP=self.pretrained_MLP)
 
         if self.use_pretrain:

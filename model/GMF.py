@@ -54,6 +54,6 @@ class GMF(nn.Module):
             output = output.view(-1)
         else:
             output = self.predict_layer(output)
-
+        print(f'GMF output.shape: {output.shape}')
         return output
 

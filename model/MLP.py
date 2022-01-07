@@ -75,6 +75,8 @@ class MLP(nn.Module):
         else:
             output = self.predict_layer(output)
 
+        print(f'MLP output.shape: {output.shape}')
+
         return output
 
     def __call__(self,*args):
