@@ -22,9 +22,10 @@ class GMF(nn.Module):
 
         self.user_embedding = nn.Embedding(num_users,num_factor)
         self.item_embedding = nn.Embedding(num_items,num_factor)
-        if not self.use_NeuMF:
-            self.predict_layer = nn.Linear(num_factor,1)
-            self.Sigmoid = nn.Sigmoid()
+
+        self.predict_layer = nn.Linear(num_factor,1)
+        self.Sigmoid = nn.Sigmoid()
+
         if use_pretrain:
             self._load_pretrained_model()
         else:
