@@ -69,13 +69,11 @@ class MLP(nn.Module):
         embed_item = self.item_embedding(item)
         embed_input = torch.cat((embed_user,embed_item),dim=-1)
         output = self.MLP_model(embed_input)
+
         if not self.use_NeuMF:
             output = self.predict_layer(output)
             output = self.Sigmoid(output)
             output = output.view(-1)
-
-
-        print(f'MLP output.shape: {output.shape}')
 
         return output
 
