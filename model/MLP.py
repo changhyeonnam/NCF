@@ -58,7 +58,7 @@ class MLP(nn.Module):
             self.pretrained_MLP.user_embedding.weight)
         self.item_embedding.weight.data.copy_(
             self.pretrained_MLP.item_embedding.weight)
-        for layer, pretrained_layer in zip(self.MLP_model,self.pretrained_MLP):
+        for layer, pretrained_layer in zip(self.MLP_model,self.pretrained_MLP.MLP_model):
             if isinstance(layer,nn.Linear) and isinstance(pretrained_layer,nn.Linear):
                 layer.weight.data.copy_(pretrained_layer.weight)
                 layer.bias.data.copy_(pretrained_layer.bias)
