@@ -35,9 +35,9 @@ class MLP(nn.Module):
         # unpacking layers in to torch.nn.Sequential
         self.MLP_model = nn.Sequential(*MLP_layers)
 
-        if not use_NeuMF:
-            self.predict_layer =nn.Linear(num_factor, 1)
-            self.Sigmoid  = nn.Sigmoid()
+        self.predict_layer =nn.Linear(num_factor, 1)
+        self.Sigmoid  = nn.Sigmoid()
+
         if self.use_pretrain:
             self._load_pretrained_model()
         else:
