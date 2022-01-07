@@ -21,13 +21,22 @@ class Download():
         '''
         when file size if '100k' or '20m', dataframe is .csv file,
         other wise dataframe is .data file
+        and when extract 10m.zip then, extracted directory is 10M100K.. so i have to consider it.
         '''
         if self.file_size_url == '100k' or self.file_size_url == '20m':
             self.file_url = 'ml-latest' if self.file_size_url == '20m' else 'ml-latest-small'
             self.fname = os.path.join(self.root, self.file_url, 'ratings.csv')
         else:
-            self.file_url = 'ml-' + self.file_size_url
-            self.fname = os.path.join(self.root, self.file_url, 'ratings.dat')
+            if self.file_size_url == '10m':
+                self.file_url = 'ml-' + self.file_size_url
+                self.extracted_file_dir = 'ml-10M100K'
+            if self.file_size_url =='1m':
+                self.file_url = 'ml-' + self.file_size_url
+
+            if self.file_size_url=='10m':
+                self.fname = os.path.join(self.root, self.extracted_file_dir, 'ratings.dat')
+            else:
+                self.fname = os.path.join(self.root, self.file_url, 'ratings.dat')
 
         if self.download or not os.path.isfile(self.fname):
             self._download_movielens()
@@ -64,6 +73,7 @@ class Download():
         print("Reading file")
         if not os.path.isfile(self.fname):
             self._download_movielens()
+
         if self.file_size_url == '100k' or self.file_size_url == '20m':
             df = pd.read_csv(self.fname, sep=',')
         else:
