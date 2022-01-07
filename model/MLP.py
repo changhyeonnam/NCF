@@ -29,6 +29,7 @@ class MLP(nn.Module):
         for idx,factor in enumerate(layer):
             # ith MLP layer (layer[i],layer[i]//2) -> #(i+1)th MLP layer (layer[i+1],layer[i+1]//2)
             # ex) (64,32) -> (32,16) -> (16,8)
+
             MLP_layers.append(nn.Linear(factor, factor // 2))
             MLP_layers.append(nn.ReLU())
 
@@ -72,8 +73,7 @@ class MLP(nn.Module):
             output = self.predict_layer(output)
             output = self.Sigmoid(output)
             output = output.view(-1)
-        else:
-            output = self.predict_layer(output)
+
 
         print(f'MLP output.shape: {output.shape}')
 

@@ -23,6 +23,7 @@ class GMF(nn.Module):
         self.user_embedding = nn.Embedding(num_users,num_factor)
         self.item_embedding = nn.Embedding(num_items,num_factor)
 
+
         self.predict_layer = nn.Linear(num_factor,1)
         self.Sigmoid = nn.Sigmoid()
 
@@ -47,13 +48,12 @@ class GMF(nn.Module):
 
     def forward(self,users,items):
         embedding_elementwise = self.user_embedding(users) * self.item_embedding(items)
-        output = embedding_elementwise
         if not self.use_NeuMF:
             output = self.predict_layer(embedding_elementwise)
             output = self.Sigmoid(output)
             output = output.view(-1)
         else:
-            output = self.predict_layer(output)
+            output = embedding_elementwise
         print(f'GMF output.shape: {output.shape}')
         return output
 
