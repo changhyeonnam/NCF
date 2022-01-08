@@ -43,7 +43,7 @@ python main.py --epoch 30 --batch 256 --factor 8 --model NeuMF -pr False --topk 
 
 ### Neural Collaborative Filtering Result
 
-| movielens 100K | Best HR | NDCG | Runtime | epoch | #factor | batch_size | layer |
+| movielens 100K | Best HR | NDCG | Runtime | epoch | #factor | batch_size | layer for MLP |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | GMF | 0.815 | 0.552 | 2m 40sec | 20 | 8 | 256 | X |
 | MLP | 0.803 | 0.567 | 17m 42sec | 20 | 8 | 256 | [64,32,16] |
@@ -51,7 +51,7 @@ python main.py --epoch 30 --batch 256 --factor 8 --model NeuMF -pr False --topk 
 | NeuMF (pretrained) | 0.980 | 0.702 | 4m 42sec | 20 | 8 | 256 | X |
 
 
-| movielens-1M | Best HR | NDCG | Runtime | epoch | preditivie factor | batch size | layer for MLO |
+| movielens-1M | Best HR | NDCG | Runtime | epoch | preditivie factor | batch size | layer for MLP |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | GMF | 0.761 | 0.493 | 26m 45sec | 20 | 8 | 256 | X |
 | MLP | 0.785 | 0.526 | 1h 47m 24sec | 20 | 8 | 256 | [64,32,16] |
