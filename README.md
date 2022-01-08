@@ -37,7 +37,7 @@ python main.py --epoch 30 --batch 256 --factor 8 --model NeuMF -pr False --topk 
 ### development enviroment
 
 - OS: Max OS X
-- IDE: pycharm, gpu sever computer에서는 vim을 사용
+- IDE: pycharm
 - GPU: NVIDIA RTX A6000
 
 
