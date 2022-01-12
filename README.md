@@ -62,20 +62,20 @@ python main.py --epoch 30 --batch 256 --factor 8 --model NeuMF -pr False --topk 
 
 - save GMF
   ```python
-  python main.py --epoch 30 --batch 256 --factor 8 --model GMF -pr False --topk 10
+  python main.py --epoch 30 --batch 256 --factor 8 --model GMF --topk 10
   --file_size 100k --layer 64 32 16 --download True --save True
 
   ```
 - save MLP
 
   ```python
-  python main.py --epoch 30 --batch 256 --factor 8 --model MLP -pr False --topk 10
+  python main.py --epoch 30 --batch 256 --factor 8 --model MLP --topk 10
   --file_size 100k --layer 64 32 16 --download False --save True
 
   ```
 - use pre-trained model
   ```python
-  python main.py --epoch 30 --batch 256 --factor 8 --model NeuMF -pr False --topk 10
+  python main.py --epoch 30 --batch 256 --factor 8 --model NeuMF  --topk 10
   --file_size 100k --layer 64 32 16 --download False --use_pretrain True
   ```
 
