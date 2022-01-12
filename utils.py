@@ -111,8 +111,8 @@ class MovieLens(Dataset):
                  )->None:
         '''
         :param root: dir for download and train,test.
+        :param df: parsed dataframe
         :param file_size: large of small. if size if large then it will load(download) 20M dataset. if small then, it will load(download) 100K dataset.
-        :param train: if true, then it will load data from train dataset dir else it will load test data
         :param download: if true, it will down load from url.
         '''
         super(MovieLens, self).__init__()
@@ -146,8 +146,8 @@ class MovieLens(Dataset):
 
     def _negative_sampling(self) :
         '''
-        sampling one positive feedback per four negative feedback
-        :return: dataframe
+        sampling one positive feedback per #(ng ratio) negative feedback
+        :return: list of user, list of item,list of target
         '''
         df = self.df
         total_df = self.total_df
