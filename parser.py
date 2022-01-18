@@ -1,0 +1,15 @@
+import argparse
+
+parser=argparse.ArgumentParser(description="Run selected model")
+parser.add_argument('-e','--epoch',type=int,default=1,help="Number of epochs")
+parser.add_argument('-b','--batch',type=int,default=256,help="Batch size")
+parser.add_argument('-l','--layer', nargs='+',type=list,default=[64,32,16],help='MLP layer factor list')
+parser.add_argument('-f','--factor',type=int,default=8,help='choose number of predictive factor')
+parser.add_argument('-m','--model',type=str,default='NeuMF',help='select among the following model,[MLP, GMF, NeuMF]')
+parser.add_argument('-lr', '--lr', default=1e-3, type=float,help='learning rate for optimizer')
+parser.add_argument('-dl','--download',type=str,default='True',help='Download or not')
+parser.add_argument('-pr','--use_pretrain',type=str,default='False',help='use pretrained model or not')
+parser.add_argument('-save','--save_model',type=str,default='False',help='save trained model or not')
+parser.add_argument('-k','--topk',type=int,default=10,help='choose top@k for NDCG@k, HR@k')
+parser.add_argument('-fi','--file_size',type=str,default='100k',help='choose file size, [100k,1m,10m,20m]')
+args = parser.parse_args()

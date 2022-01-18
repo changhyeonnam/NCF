@@ -13,7 +13,7 @@ from evaluation import metrics
 import os
 import numpy as np
 import time
-from torchsummary import summary
+from parser import args
 
 # print device info
 device = torch.device('cuda' if torch.cuda.is_available()  else 'cpu')
@@ -24,19 +24,6 @@ if device == 'cuda':
     print('Current cuda device:', torch.cuda.current_device())
     print('Count of using GPUs:', torch.cuda.device_count())
 
-parser=argparse.ArgumentParser(description="Run selected model")
-parser.add_argument('-e','--epoch',type=int,default=1,help="Number of epochs")
-parser.add_argument('-b','--batch',type=int,default=256,help="Batch size")
-parser.add_argument('-l','--layer', nargs='+',type=list,default=[64,32,16],help='MLP layer factor list')
-parser.add_argument('-f','--factor',type=int,default=8,help='choose number of predictive factor')
-parser.add_argument('-m','--model',type=str,default='NeuMF',help='select among the following model,[MLP, GMF, NeuMF]')
-parser.add_argument('-lr', '--lr', default=1e-3, type=float,help='learning rate for optimizer')
-parser.add_argument('-dl','--download',type=str,default='True',help='Download or not')
-parser.add_argument('-pr','--use_pretrain',type=str,default='False',help='use pretrained model or not')
-parser.add_argument('-save','--save_model',type=str,default='False',help='save trained model or not')
-parser.add_argument('-k','--topk',type=int,default=10,help='choose top@k for NDCG@k, HR@k')
-parser.add_argument('-fi','--file_size',type=str,default='100k',help='choose file size, [100k,1m,10m,20m]')
-args = parser.parse_args()
 
 # print selected model
 print(f'model name: {args.model}')
@@ -53,7 +40,8 @@ if not os.path.isdir(pretrain_dir):
 # root path for dataset
 root_path='dataset'+args.file_size
 
-print(args.file_size)
+print(f'file size:{args.file_size}')
+
 # load dataframe
 dataset = Download(root=root_path,file_size=args.file_size,download=use_downlaod)
 total_dataframe, train_dataframe, test_dataframe = dataset.split_train_test()
@@ -63,7 +51,7 @@ train_set = MovieLens(df=train_dataframe,total_df=total_dataframe,ng_ratio=4)
 test_set = MovieLens(df=test_dataframe,total_df=total_dataframe,ng_ratio=99)
 
 # get number of unique userID, unique  movieID
-max_num_users,max_num_items = total_dataframe['userId'].nunique(), total_dataframe['movieId'].nunique()
+max_num_users,max_num_items = total_dataframe['userId'].max()+1, total_dataframe['movieId'].max()+1
 
 print('data loaded!')
 
@@ -84,8 +72,8 @@ dataloader_test = DataLoader(dataset=test_set,
 
 # select model among these models ['MLP', 'GMF', 'NeuMF']
 if args.model=='MLP':
-    model = MLP(num_users=args.batch*max_num_users,
-                num_items=args.batch*max_num_items,
+    model = MLP(num_users=max_num_users,
+                num_items=max_num_items,
                 num_factor=args.factor,
                 layer=args.layer,
                 use_pretrain=use_pretrain,
