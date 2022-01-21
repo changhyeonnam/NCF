@@ -33,7 +33,7 @@ conda install --file requirements.txt
 
 ### Quick start
 ```python
-python main.py --epoch 30 --batch 256 --factor 8 --model NeuMF -pr False --topk 10 --file_size 100k --layer 64 32 16 --download True --use_pretrain False
+python main.py --epoch 30 --batch 256 --factor 8 --model NeuMF --topk 10 --file_size 100k --layer 64 32 16 --download True --use_pretrain False
 
 ```
 
