@@ -15,7 +15,7 @@ conda install --file requirements.txt
 
 ```
 
-### Neural Collaborative Filtering model directory tree
+### directory tree
 
 ```python
 .
@@ -44,7 +44,7 @@ python main.py --epoch 30 --batch 256 --factor 8 --model NeuMF --topk 10 --file_
 - GPU: NVIDIA RTX A6000
 
 
-### Neural Collaborative Filtering Result
+### Result
 
 | movielens 100K | Best HR@10 | NDCG@10 | Runtime | epoch | preditivie factor | batch_size | layer for MLP |
 | --- | --- | --- | --- | --- | --- | --- | --- |
