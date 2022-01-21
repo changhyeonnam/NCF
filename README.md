@@ -1,9 +1,12 @@
 ## NCFML (Neural Collaborative Filtering with MovieLens in torch)
 
 ### Dataset
-I used MovieLens dataset. If there is interaction between user and item, then target value will be 1. so if there is rating value between user and movie, then target value is 1, otherwise 0. for negative sampling, ratio between positive feedback and negative feedback is 1:4 in trainset, and 1:99 in testset. (these ratios are same as author's code [@hexiangnan](https://github.com/hexiangnan/neural_collaborative_filtering))
+This repository is about Neural Collaborative Filtering with MovieLenws in torch.
+If there is interaction between user and item, then target value will be 1. (which means Implict Feedback)
+So if there is rating value between user and movie, then target value is 1, otherwise 0. 
+For negative sampling, ratio between positive feedback and negative feedback is 1:4 in trainset, and 1:99 in testset. (these ratios are same as author's code [@hexiangnan](https://github.com/hexiangnan/neural_collaborative_filtering))
 
-you can use 100k, 1m, 10m, 20m dataset by using parser parameter `--file_size`.
+You can use 100k, 1m, 10m, 20m dataset by using parser parameter `--file_size`.
 
 ### pakage installation
 
@@ -85,4 +88,3 @@ reference : [Neural Collaborative Filtering](https://arxiv.org/abs/1708.05031)
 
 review written in korean : [Review](https://changhyeonnam.github.io/2021/12/28/Neural_Collaborative_Filtering.html)
 
-Neural Collaborative Filtering with MovieLenws in torch
