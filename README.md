@@ -8,7 +8,7 @@ For negative sampling, ratio between positive feedback and negative feedback is 
 
 You can use 100k, 1m, 10m, 20m dataset by using parser parameter `--file_size`.
 
-### pakage installation
+### Pakage installation
 
 ```python
 conda install --file requirements.txt
@@ -37,7 +37,7 @@ python main.py --epoch 30 --batch 256 --factor 8 --model NeuMF -pr False --topk 
 
 ```
 
-### development enviroment
+### Development enviroment
 
 - OS: Max OS X
 - IDE: pycharm
@@ -61,7 +61,7 @@ python main.py --epoch 30 --batch 256 --factor 8 --model NeuMF -pr False --topk 
 | NeuMF (without pre-training) | 0.796 | 0.538 | 1h 46m 20sec | 20 | 8 | 256 | [64,32,16] |
 | NeuMF (pretrained) | 0.851 | 0.854 | 41m 22sec | 20 | 8 | 256 | X |
 
-### example of command line
+### Example of command line
 
 - save GMF
   ```python
