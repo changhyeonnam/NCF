@@ -15,14 +15,15 @@ import numpy as np
 import time
 from parser import args
 
-# print device info
-device = torch.device('cuda' if torch.cuda.is_available()  else 'cpu')
-print('device:',device)
+# check device
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(f'device: {device}')
 
-# print gpu info
-if device == 'cuda':
+# print GPU information
+if torch.cuda.is_available():
     print('Current cuda device:', torch.cuda.current_device())
     print('Count of using GPUs:', torch.cuda.device_count())
+
 
 
 # print selected model
