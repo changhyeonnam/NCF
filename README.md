@@ -7,27 +7,13 @@ For negative sampling, ratio between positive feedback and negative feedback is 
 
 You can use 100k, 1m, 10m, 20m dataset by using parser parameter `--file_size`.
 
-### Pakage installation
+## Dependency
 
-```python
-conda install --file requirements.txt
-
-```
-
-### directory tree
-
-```python
-.
-├── README.md
-├── evaluation.py
-├── main.py
-├── model
-│   ├── GMF.py
-│   ├── MLP.py
-│   └── NeuMF.py
-├── pretrain
-├── train.py
-└── utils.py
+```java
+pytorch >= 1.12.0
+python >= 3.8
+scipy >= 1.7.1
+numpy >= 1.20.3
 ```
 
 ### Quick start
@@ -82,8 +68,6 @@ python main.py --epoch 30 --batch 256 --factor 8 --model NeuMF --topk 10 --file_
   ```
 
 
-
-reference : [Neural Collaborative Filtering](https://arxiv.org/abs/1708.05031)
-
-review written in korean : [Review](https://changhyeonnam.github.io/2021/12/28/Neural_Collaborative_Filtering.html)
-
+## Reference
+1. [Neural Collaborative Filtering](https://arxiv.org/abs/1708.05031)
+2. Official [code](https://github.com/hexiangnan/neural_collaborative_filtering) from author
